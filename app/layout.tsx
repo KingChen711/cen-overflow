@@ -4,6 +4,7 @@ import React from 'react'
 import { Inter, Space_Grotesk } from 'next/font/google'
 import type { Metadata } from 'next'
 import './globals.css'
+import ThemeProvider from '@/contexts/ThemeProvider'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
   }
 }
 
-export default function RootLayout ({ children }: {children: React.ReactNode}) {
+export default function RootLayout ({ children }: { children: React.ReactNode }) {
   return (
     <ClerkProvider
       appearance={{
@@ -36,11 +37,11 @@ export default function RootLayout ({ children }: {children: React.ReactNode}) {
         }
       }}
     >
-      <html lang="en">
-        <body className={`${inter.variable} ${spaceGrotesk.variable}`}>
-          {children}
-        </body>
-      </html>
+      <ThemeProvider>
+        <html lang='en'>
+          <body className={`${inter.variable} ${spaceGrotesk.variable}`}>{children}</body>
+        </html>
+      </ThemeProvider>
     </ClerkProvider>
   )
 }

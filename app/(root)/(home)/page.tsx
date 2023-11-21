@@ -46,6 +46,82 @@ const questions = [
     upvotes: 23,
     answers: [{}, {}, {}, {}],
     views: 347
+  },
+  {
+    _id: '2',
+    title: 'Redux Toolkit Not Updating State as Expected',
+    tags: [
+      { _id: '1', name: 'javascript', totalQuestions: 21 },
+      { _id: '5', name: 'nestjs', totalQuestions: 5 },
+      { _id: '2', name: 'react', totalQuestions: 18 }
+    ],
+    author: {
+      _id: '1',
+      name: 'King Chen 711',
+      picture:
+        'https://scontent.fsgn19-1.fna.fbcdn.net/v/t39.30808-1/338573851_702481094900552_4552716029295561758_n.jpg?stp=cp0_dst-jpg_p40x40&_nc_cat=100&ccb=1-7&_nc_sid=5f2048&_nc_ohc=Yx3FpW5KCBoAX9zhEuE&_nc_ht=scontent.fsgn19-1.fna&oh=00_AfCICLJyUtsyEaN3czbTRtZD98W5NjuS1IqhokyoEYnNZA&oe=655F6D2C'
+    },
+    createdAt: new Date('2023-11-13T07:52:51+00:00'),
+    upvotes: 59,
+    answers: [{}, {}, {}, {}, {}, {}, {}],
+    views: 3234
+  },
+  {
+    _id: '1',
+    title: 'Best practices for data fetching in a Next.js application with Server-Side Rendering (SSR)?',
+    tags: [
+      { _id: '3', name: 'redux' },
+      { _id: '4', name: 'nextjs' },
+      { _id: '5', name: 'nestjs' }
+    ],
+    author: {
+      _id: '1',
+      name: 'King Chen 711',
+      picture:
+        'https://scontent.fsgn19-1.fna.fbcdn.net/v/t39.30808-1/338573851_702481094900552_4552716029295561758_n.jpg?stp=cp0_dst-jpg_p40x40&_nc_cat=100&ccb=1-7&_nc_sid=5f2048&_nc_ohc=Yx3FpW5KCBoAX9zhEuE&_nc_ht=scontent.fsgn19-1.fna&oh=00_AfCICLJyUtsyEaN3czbTRtZD98W5NjuS1IqhokyoEYnNZA&oe=655F6D2C'
+    },
+    createdAt: new Date('2023-10-15T07:52:51+00:00'),
+    upvotes: 23,
+    answers: [{}, {}, {}, {}],
+    views: 347
+  },
+  {
+    _id: '2',
+    title: 'Redux Toolkit Not Updating State as Expected',
+    tags: [
+      { _id: '1', name: 'javascript', totalQuestions: 21 },
+      { _id: '5', name: 'nestjs', totalQuestions: 5 },
+      { _id: '2', name: 'react', totalQuestions: 18 }
+    ],
+    author: {
+      _id: '1',
+      name: 'King Chen 711',
+      picture:
+        'https://scontent.fsgn19-1.fna.fbcdn.net/v/t39.30808-1/338573851_702481094900552_4552716029295561758_n.jpg?stp=cp0_dst-jpg_p40x40&_nc_cat=100&ccb=1-7&_nc_sid=5f2048&_nc_ohc=Yx3FpW5KCBoAX9zhEuE&_nc_ht=scontent.fsgn19-1.fna&oh=00_AfCICLJyUtsyEaN3czbTRtZD98W5NjuS1IqhokyoEYnNZA&oe=655F6D2C'
+    },
+    createdAt: new Date('2023-11-13T07:52:51+00:00'),
+    upvotes: 59,
+    answers: [{}, {}, {}, {}, {}, {}, {}],
+    views: 3234
+  },
+  {
+    _id: '1',
+    title: 'Best practices for data fetching in a Next.js application with Server-Side Rendering (SSR)?',
+    tags: [
+      { _id: '3', name: 'redux' },
+      { _id: '4', name: 'nextjs' },
+      { _id: '5', name: 'nestjs' }
+    ],
+    author: {
+      _id: '1',
+      name: 'King Chen 711',
+      picture:
+        'https://scontent.fsgn19-1.fna.fbcdn.net/v/t39.30808-1/338573851_702481094900552_4552716029295561758_n.jpg?stp=cp0_dst-jpg_p40x40&_nc_cat=100&ccb=1-7&_nc_sid=5f2048&_nc_ohc=Yx3FpW5KCBoAX9zhEuE&_nc_ht=scontent.fsgn19-1.fna&oh=00_AfCICLJyUtsyEaN3czbTRtZD98W5NjuS1IqhokyoEYnNZA&oe=655F6D2C'
+    },
+    createdAt: new Date('2023-10-15T07:52:51+00:00'),
+    upvotes: 23,
+    answers: [{}, {}, {}, {}],
+    views: 347
   }
 ]
 
@@ -56,7 +132,7 @@ function Home () {
         <h1 className='h1-bold text-dark100_light900'>All Questions</h1>
 
         <Link href='/ask-question' className='flex justify-end max-sm:w-full'>
-          <Button className='primary-gradient min-h-[46px] px-4 py-3 !text-light-900'>Ask a question</Button>
+          <Button className='primary-gradient min-h-[46px] px-4 py-3 !text-light-900'>Ask a Question</Button>
         </Link>
       </div>
 

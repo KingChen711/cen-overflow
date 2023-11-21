@@ -13,7 +13,7 @@ function Navbar () {
         <Image src='/assets/images/site-logo.svg' width={23} height={23} alt='ChenFlow' />
 
         <p className='h2-bold font-spaceGrotesk text-dark-100 dark:text-light-900 max-sm:hidden'>
-          Chen <span className='text-primary-500'>Overflow</span>
+          Chen<span className='text-primary-500'>Overflow</span>
         </p>
       </Link>
       <GlobalSearch />

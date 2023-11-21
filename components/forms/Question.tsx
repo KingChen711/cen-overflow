@@ -11,10 +11,19 @@ import { Editor } from '@tinymce/tinymce-react'
 import React, { useRef, useState } from 'react'
 import { Badge } from '../ui/badge'
 import Image from 'next/image'
+import { createQuestion } from '@/lib/actions/question.action'
+import { usePathname, useRouter } from 'next/navigation'
 
 const type: any = 'create'
 
-export default function Question () {
+type Props = {
+  mongoUserId: string
+}
+
+export default function Question ({ mongoUserId }: Props) {
+  const router = useRouter()
+  const pathName = usePathname()
+  console.log(pathName)
   const editorRef = useRef(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -27,12 +36,20 @@ export default function Question () {
     }
   })
 
-  function onSubmit (values: z.infer<typeof questionSchema>) {
+  async function onSubmit (values: z.infer<typeof questionSchema>) {
     setIsSubmitting(true)
     try {
       // make am async call to API -> create a question
       // contains all form data
+      await createQuestion({
+        title: values.title,
+        content: values.explanation,
+        tags: values.tags,
+        author: JSON.parse(mongoUserId),
+        path: pathName
+      })
       // navigate to home page
+      router.push('/')
     } catch (error) {
     } finally {
       setIsSubmitting(false)
@@ -111,6 +128,8 @@ export default function Question () {
                     // @ts-ignore
                     (editorRef.current = editor)
                   }
+                  onBlur={field.onBlur}
+                  onEditorChange={(content) => field.onChange(content)}
                   initialValue=''
                   init={{
                     height: 350,
@@ -170,7 +189,6 @@ export default function Question () {
                   {field.value.length > 0 && (
                     <div className='flex-start mt-2.5 gap-2.5'>
                       {(() => {
-                        console.log(field.value)
                         return field.value.map((tag: any) => {
                           return (
                             <Badge

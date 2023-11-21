@@ -7,6 +7,10 @@ const nextConfig = {
         hostname: '**'
       }
     ]
+  },
+  experimental: {
+    mdxRs: true,
+    serverComponentsExternalPackages: ['mongoose']
   }
 }
 

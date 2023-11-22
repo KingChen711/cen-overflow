@@ -32,8 +32,6 @@ const ThemeProvider = ({ children }: ThemeProviderProps) => {
   }
 
   useEffect(() => {
-    console.log(theme)
-
     handleChangeTheme()
   }, [theme])
 

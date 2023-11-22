@@ -27,7 +27,6 @@ function Theme () {
               <MenubarItem
                 onClick={() => {
                   setTheme(item.value as ThemeType)
-                  console.log('click theme')
 
                   if (item.value !== 'system') {
                     localStorage.theme = item.value

@@ -23,7 +23,6 @@ type Props = {
 export default function Question ({ mongoUserId }: Props) {
   const router = useRouter()
   const pathName = usePathname()
-  console.log(pathName)
   const editorRef = useRef(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 

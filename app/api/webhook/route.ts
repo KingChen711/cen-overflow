@@ -82,6 +82,8 @@ export async function POST (req: Request) {
     return NextResponse.json({ message: 'ok', user: mongoUser })
   }
 
+  console.log({ eventType })
+
   if (eventType === 'user.deleted') {
     const { id } = evt.data
 

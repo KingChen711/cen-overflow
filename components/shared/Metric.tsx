@@ -13,7 +13,7 @@ type Props = {
   isAuthor?: boolean
 }
 
-function Metric ({ imgUrl, alt, value, title, href, textStyles, isAuthor }: Props) {
+function Metric({ imgUrl, alt, value, title, href, textStyles, isAuthor }: Props) {
   const metricContent = (
     <>
       <Image alt={alt} src={imgUrl} width={16} height={16} className={cn('object-contain', href && 'rounded-full')} />

@@ -8,7 +8,7 @@ type Props = {
   containerClasses?: string
 }
 
-function Filter ({ filters, className, containerClasses }: Props) {
+function Filter({ filters, className, containerClasses }: Props) {
   return (
     <div className={cn('relative', containerClasses)}>
       <Select>

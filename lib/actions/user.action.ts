@@ -2,11 +2,32 @@
 
 import User from '@/database/user.model'
 import { connectToDatabase } from '../mongoose'
-import { CreateUserParams, DeleteUserParams, GetUserByIdParams, UpdateUserParams } from './shared.types'
+import {
+  CreateUserParams,
+  DeleteUserParams,
+  GetAllUsersParams,
+  GetUserByIdParams,
+  UpdateUserParams
+} from './shared.types'
 import { revalidatePath } from 'next/cache'
 import Question from '@/database/question.model'
 
-export async function getUserById (params: GetUserByIdParams) {
+export async function getAllUsers(params: GetAllUsersParams) {
+  try {
+    connectToDatabase()
+
+    // const { page = 1, pageSize = 20, filter, searchQuery } = params
+
+    const users = await User.find({}).sort({ createdAt: -1 })
+
+    return { users }
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export async function getUserById(params: GetUserByIdParams) {
   try {
     connectToDatabase()
 
@@ -21,7 +42,7 @@ export async function getUserById (params: GetUserByIdParams) {
   }
 }
 
-export async function createdUser (userData: CreateUserParams) {
+export async function createdUser(userData: CreateUserParams) {
   try {
     connectToDatabase()
 
@@ -34,7 +55,7 @@ export async function createdUser (userData: CreateUserParams) {
   }
 }
 
-export async function updateUser (params: UpdateUserParams) {
+export async function updateUser(params: UpdateUserParams) {
   try {
     connectToDatabase()
 
@@ -49,7 +70,7 @@ export async function updateUser (params: UpdateUserParams) {
   }
 }
 
-export async function deleteUser (params: DeleteUserParams) {
+export async function deleteUser(params: DeleteUserParams) {
   try {
     connectToDatabase()
 

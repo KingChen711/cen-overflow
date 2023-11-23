@@ -19,7 +19,7 @@ const popularTags = [
   { _id: '5', name: 'nestjs', totalQuestions: 5 }
 ]
 
-function RightSidebar () {
+function RightSidebar() {
   return (
     <section className='background-light900_dark200 light-border custom-scrollbar sticky right-0 top-0 flex h-screen w-[350px] shrink-0 flex-col overflow-y-auto border-l p-6 pt-36 shadow-light-300 dark:shadow-none max-xl:hidden'>
       <h3 className='h3-bold text-dark200_light900 mb-7'>Top Questions</h3>
@@ -28,7 +28,7 @@ function RightSidebar () {
         {hotQuestions.map((question) => {
           return (
             <Link
-              href={`/questions/${question._id}`}
+              href={`/question/${question._id}`}
               key={question._id}
               className='flex items-center justify-between gap-[30px]'
             >

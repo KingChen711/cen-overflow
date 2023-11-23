@@ -13,7 +13,7 @@ type Props = {
   className?: string
 }
 
-function LocalSearchBar ({ route, iconPosition, imgSrc, placeholder, className }: Props) {
+function LocalSearchBar({ route, iconPosition, imgSrc, placeholder, className }: Props) {
   return (
     <div
       className={cn(

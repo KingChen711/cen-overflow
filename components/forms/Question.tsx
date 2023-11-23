@@ -13,6 +13,7 @@ import { Badge } from '../ui/badge'
 import Image from 'next/image'
 import { createQuestion } from '@/lib/actions/question.action'
 import { usePathname, useRouter } from 'next/navigation'
+import { useTheme } from '@/contexts/ThemeProvider'
 
 const type: any = 'create'
 
@@ -20,10 +21,11 @@ type Props = {
   mongoUserId: string
 }
 
-export default function Question ({ mongoUserId }: Props) {
+export default function Question({ mongoUserId }: Props) {
   const router = useRouter()
   const pathName = usePathname()
   const editorRef = useRef(null)
+  const { theme } = useTheme()
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const form = useForm<z.infer<typeof questionSchema>>({
@@ -35,7 +37,7 @@ export default function Question ({ mongoUserId }: Props) {
     }
   })
 
-  async function onSubmit (values: z.infer<typeof questionSchema>) {
+  async function onSubmit(values: z.infer<typeof questionSchema>) {
     setIsSubmitting(true)
     try {
       // make am async call to API -> create a question
@@ -154,7 +156,9 @@ export default function Question ({ mongoUserId }: Props) {
                       'undo redo | ' +
                       'codesample | bold italic forecolor | alignleft aligncenter |' +
                       'alignright alignjustify | bullist numlist',
-                    content_style: 'body { font-family:Inter; font-size:16px }'
+                    content_style: 'body { font-family:Inter; font-size:16px }',
+                    content_css: theme === 'dark' ? 'dark' : 'light',
+                    skin: theme === 'dark' ? 'oxide-dark' : 'oxide'
                   }}
                 />
               </FormControl>
@@ -220,13 +224,11 @@ export default function Question ({ mongoUserId }: Props) {
           )}
         />
         <Button type='submit' className='primary-gradient w-fit !text-light-900' disabled={isSubmitting}>
-          {isSubmitting
-            ? (
+          {isSubmitting ? (
             <>{type === 'edit' ? 'Editing...' : 'Posting...'}</>
-              )
-            : (
+          ) : (
             <>{type === 'edit' ? 'Edit Question' : 'Ask a Question'}</>
-              )}
+          )}
         </Button>
       </form>
     </Form>

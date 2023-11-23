@@ -10,7 +10,7 @@ import { sidebarLinks } from '@/constants'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 
-function MobileNavbar () {
+function MobileNavbar() {
   return (
     <Sheet>
       <SheetTrigger asChild>

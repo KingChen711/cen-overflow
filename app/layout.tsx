@@ -4,6 +4,7 @@ import React from 'react'
 import { Inter, Space_Grotesk } from 'next/font/google'
 import type { Metadata } from 'next'
 import './globals.css'
+import '../styles/prism.css'
 import ThemeProvider from '@/contexts/ThemeProvider'
 
 const inter = Inter({
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
   }
 }
 
-export default function RootLayout ({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <ClerkProvider
       appearance={{

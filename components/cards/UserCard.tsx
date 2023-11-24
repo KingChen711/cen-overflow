@@ -15,11 +15,11 @@ type Props = {
   }
 }
 
-async function UserCard({ user: { _id, name, picture, username } }: Props) {
+async function UserCard({ user: { _id, name, picture, username, clerkId } }: Props) {
   const interactedTags = await getTopInteractedTags({ userId: _id })
 
   return (
-    <Link href={`/profile/${_id}`} className='shadow-light100_darknone w-full max-xs:min-w-full xs:w-[260px]'>
+    <Link href={`/profile/${clerkId}`} className='shadow-light100_darknone w-full max-xs:min-w-full xs:w-[260px]'>
       <article className='background-light900_dark200 light-border flex w-full flex-col items-center justify-center rounded-2xl border p-8 '>
         <Image alt='user avatar' src={picture} className='rounded-full' width={100} height={100} />
 

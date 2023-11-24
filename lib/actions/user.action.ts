@@ -11,10 +11,11 @@ import {
 } from './shared.types'
 import { revalidatePath } from 'next/cache'
 import Question from '@/database/question.model'
+import Answer from '@/database/answer.model'
 
 export async function getAllUsers(params: GetAllUsersParams) {
   try {
-    connectToDatabase()
+    await connectToDatabase()
 
     // const { page = 1, pageSize = 20, filter, searchQuery } = params
 
@@ -29,7 +30,7 @@ export async function getAllUsers(params: GetAllUsersParams) {
 
 export async function getUserById(params: GetUserByIdParams) {
   try {
-    connectToDatabase()
+    await connectToDatabase()
 
     const { userId } = params
 
@@ -44,7 +45,7 @@ export async function getUserById(params: GetUserByIdParams) {
 
 export async function createdUser(userData: CreateUserParams) {
   try {
-    connectToDatabase()
+    await connectToDatabase()
 
     const newUser = await User.create(userData)
 
@@ -57,7 +58,7 @@ export async function createdUser(userData: CreateUserParams) {
 
 export async function updateUser(params: UpdateUserParams) {
   try {
-    connectToDatabase()
+    await connectToDatabase()
 
     const { clerkId, path, updateData } = params
 
@@ -72,7 +73,7 @@ export async function updateUser(params: UpdateUserParams) {
 
 export async function deleteUser(params: DeleteUserParams) {
   try {
-    connectToDatabase()
+    await connectToDatabase()
 
     const { clerkId } = params
 
@@ -92,6 +93,28 @@ export async function deleteUser(params: DeleteUserParams) {
     const deletedUser = await User.findByIdAndDelete(user._id)
 
     return deletedUser
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export async function getUserInfo(params: GetUserByIdParams) {
+  try {
+    await connectToDatabase()
+
+    const { userId } = params
+
+    const user = await User.findOne({ clerkId: userId })
+
+    if (!user) {
+      throw new Error('Use not found')
+    }
+
+    const totalQuestions = await Question.countDocuments({ author: user._id })
+    const totalAnswers = await Answer.countDocuments({ author: user._id })
+
+    return { totalQuestions, totalAnswers, user }
   } catch (error) {
     console.log(error)
     throw error

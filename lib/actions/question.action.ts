@@ -17,7 +17,7 @@ import { FilterQuery } from 'mongoose'
 
 export async function createQuestion(params: CreateQuestionParams) {
   try {
-    connectToDatabase()
+    await connectToDatabase()
     const { title, content, tags, author, path } = params
 
     // Create a question
@@ -57,7 +57,7 @@ export async function createQuestion(params: CreateQuestionParams) {
 
 export async function getQuestions(params: GetQuestionsParams) {
   try {
-    connectToDatabase()
+    await connectToDatabase()
 
     const questions = await Question.find()
       .populate({ path: 'tags', model: Tag })
@@ -73,7 +73,7 @@ export async function getQuestions(params: GetQuestionsParams) {
 
 export async function getQuestionById(params: GetQuestionByIdParams) {
   try {
-    connectToDatabase()
+    await connectToDatabase()
 
     const { questionId } = params
 
@@ -90,7 +90,7 @@ export async function getQuestionById(params: GetQuestionByIdParams) {
 
 export async function upvoteQuestion(params: QuestionVoteParams) {
   try {
-    connectToDatabase()
+    await connectToDatabase()
 
     const { questionId, hasdownVoted, hasupVoted, path, userId } = params
 
@@ -120,7 +120,7 @@ export async function upvoteQuestion(params: QuestionVoteParams) {
 
 export async function downvoteQuestion(params: QuestionVoteParams) {
   try {
-    connectToDatabase()
+    await connectToDatabase()
 
     const { questionId, hasdownVoted, hasupVoted, path, userId } = params
 
@@ -150,7 +150,7 @@ export async function downvoteQuestion(params: QuestionVoteParams) {
 
 export async function toggleSaveQuestion(params: ToggleSaveQuestionParams) {
   try {
-    connectToDatabase()
+    await connectToDatabase()
 
     const { path, questionId, userId } = params
 
@@ -175,7 +175,7 @@ export async function toggleSaveQuestion(params: ToggleSaveQuestionParams) {
 
 export async function getSavedQuestions(params: GetSavedQuestionsParams) {
   try {
-    connectToDatabase()
+    await connectToDatabase()
 
     const { clerkId, searchQuery } = params
 

@@ -2,12 +2,13 @@
 
 import User from '@/database/user.model'
 import { connectToDatabase } from '../mongoose'
-import { GetAllTagsParams, GetTopInteractedTagsParams } from './shared.types'
+import { GetAllTagsParams, GetQuestionsByTagIdParams, GetTopInteractedTagsParams } from './shared.types'
 import Tag from '@/database/tag.model'
+import Question from '@/database/question.model'
 
 export async function getAllTags(params: GetAllTagsParams) {
   try {
-    connectToDatabase()
+    await connectToDatabase()
 
     // const {  } = params
 
@@ -22,7 +23,7 @@ export async function getAllTags(params: GetAllTagsParams) {
 
 export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
   try {
-    connectToDatabase()
+    await connectToDatabase()
 
     const { userId } = params
 
@@ -38,6 +39,29 @@ export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
       { _id: '2', name: 'tag2' },
       { _id: '3', name: 'tag3' }
     ]
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export async function getQuestionsByTagIdParams(params: GetQuestionsByTagIdParams) {
+  try {
+    await connectToDatabase()
+
+    const { tagId } = params
+
+    const tag = await Tag.findById(tagId)
+    if (!tag) {
+      throw new Error('Tag not found!')
+    }
+
+    const matchedQuestions = await Question.find({ tags: { $in: [tagId] } })
+      .populate({ path: 'tags', model: Tag })
+      .populate({ path: 'author', model: User })
+      .sort({ createdAt: -1 })
+
+    return { questions: matchedQuestions, tag }
   } catch (error) {
     console.log(error)
     throw error

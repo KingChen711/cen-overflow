@@ -33,7 +33,7 @@ async function QuestionDetailPage({ params }: Props) {
     <>
       <div className='flex-start w-full flex-col'>
         <div className='flex w-full flex-col-reverse justify-between gap-5 sm:flex-row sm:items-center sm:gap-2'>
-          <Link href={`/profile/${result.question.author._id}`} className='flex items-center justify-start gap-1'>
+          <Link href={`/profile/${result.question.author.clerkId}`} className='flex items-center justify-start gap-1'>
             <Image src={result.question.author.picture} alt='profile' height={22} width={22} className='rounded-full' />
             <p className='paragraph-semibold text-dark300_light700'>{result.question.author.name}</p>
           </Link>

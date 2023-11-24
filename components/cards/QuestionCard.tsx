@@ -16,6 +16,7 @@ type Props = {
       _id: string
       name: string
       picture: string
+      clerkId: string
     }
     createdAt: Date
     upvotes: Array<object>
@@ -51,7 +52,7 @@ function QuestionCard({ question }: Props) {
           title={`• asked ${getTimestamp(question.createdAt)}`}
           value={question.author.name}
           textStyles='body-medium text-dark400_light700'
-          href={`/profile/${question.author._id}`}
+          href={`/profile/${question.author.clerkId}`}
           isAuthor
         />
 

@@ -1,11 +1,12 @@
 'use client'
 
 import { downvoteAnswer, upvoteAnswer } from '@/lib/actions/answer.action'
+import { viewQuestion } from '@/lib/actions/interactive.action'
 import { downvoteQuestion, toggleSaveQuestion, upvoteQuestion } from '@/lib/actions/question.action'
 import { formatNumber } from '@/lib/utils'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
-import React from 'react'
+import React, { useEffect } from 'react'
 
 type Props = (
   | {
@@ -92,6 +93,15 @@ function Votes(props: Props) {
       userId: JSON.parse(userId)
     })
   }
+
+  useEffect(() => {
+    if (type === 'question') {
+      viewQuestion({
+        questionId: JSON.parse(itemId),
+        userId: userId ? JSON.parse(userId) : undefined
+      })
+    }
+  }, [itemId, userId, type])
 
   return (
     <div className='flex gap-5'>

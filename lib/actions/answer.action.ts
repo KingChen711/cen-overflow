@@ -9,7 +9,7 @@ import User from '@/database/user.model'
 
 export async function createAnswer(params: CreateAnswerParams) {
   try {
-    connectToDatabase()
+    await connectToDatabase()
     const { author, content, path, question } = params
     // Create a answer
     const newAnswer = await Answer.create({
@@ -31,7 +31,7 @@ export async function createAnswer(params: CreateAnswerParams) {
 
 export async function getAnswers(params: GetAnswersParams) {
   try {
-    connectToDatabase()
+    await connectToDatabase()
     const { questionId } = params
 
     const answers = await Answer.find({ question: questionId })
@@ -51,7 +51,7 @@ export async function getAnswers(params: GetAnswersParams) {
 
 export async function upvoteAnswer(params: AnswerVoteParams) {
   try {
-    connectToDatabase()
+    await connectToDatabase()
 
     const { hasdownVoted, hasupVoted, path, userId, answerId } = params
 
@@ -81,7 +81,7 @@ export async function upvoteAnswer(params: AnswerVoteParams) {
 
 export async function downvoteAnswer(params: AnswerVoteParams) {
   try {
-    connectToDatabase()
+    await connectToDatabase()
 
     const { answerId, hasdownVoted, hasupVoted, path, userId } = params
 

@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { sidebarLinks } from '@/constants'
 import { cn } from '@/lib/utils'
-import { SignedOut } from '@clerk/nextjs'
+import { SignedOut, useAuth } from '@clerk/nextjs'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -39,10 +39,17 @@ export default LeftSidebar
 
 const NavContent = () => {
   const pathname = usePathname()
+  const { userId } = useAuth()
   return (
     <div className='flex flex-col gap-6'>
       {sidebarLinks.map((item) => {
         const isActive = (pathname.includes(item.route) && item.route.length > 1) || pathname === item.route
+
+        if (item.route === '/profile') {
+          if (userId) {
+            item.route = `${item.route}/${userId}`
+          }
+        }
 
         return (
           <Link

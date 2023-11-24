@@ -10,11 +10,20 @@ import { Button } from '../ui/button'
 import { answerSchema } from '@/lib/validations'
 import { useTheme } from '@/contexts/ThemeProvider'
 import Image from 'next/image'
+import { createAnswer } from '@/lib/actions/answer.action'
+import { usePathname } from 'next/navigation'
+import { redirectToSignIn } from '@clerk/nextjs'
 
-function Answer() {
+type Props = {
+  questionId: string
+  authorId?: string
+}
+
+function Answer({ questionId, authorId }: Props) {
   const editorRef = useRef(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { theme } = useTheme()
+  const pathName = usePathname()
 
   const form = useForm<z.infer<typeof answerSchema>>({
     resolver: zodResolver(answerSchema),
@@ -26,9 +35,23 @@ function Answer() {
   async function onSubmit(values: z.infer<typeof answerSchema>) {
     setIsSubmitting(true)
     try {
-      // make am async call to API -> create a question
-      // contains all form data
-      // navigate to home page
+      // TODO: add toast about need to sign in
+      console.log({ authorId })
+
+      if (!authorId) return redirectToSignIn()
+
+      await createAnswer({
+        author: JSON.parse(authorId),
+        content: values.answer,
+        question: JSON.parse(questionId),
+        path: pathName
+      })
+
+      form.reset()
+      if (editorRef.current) {
+        const editor = editorRef.current as any
+        editor.setContent('')
+      }
     } catch (error) {
     } finally {
       setIsSubmitting(false)
@@ -44,7 +67,7 @@ function Answer() {
           onClick={() => {}}
           className='btn light-border-2 gap-1.5 rounded-md px-4 py-2.5 text-primary-500 shadow-none'
         >
-          <Image src='/assets/icons/starts.svg' alt='star' width={12} height={12} className='object-contain' />
+          <Image src='/assets/icons/stars.svg' alt='star' width={12} height={12} className='object-contain' />
           Generate an AI answer
         </Button>
       </div>

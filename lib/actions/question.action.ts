@@ -3,9 +3,17 @@
 import Question from '@/database/question.model'
 import { connectToDatabase } from '../mongoose'
 import Tag from '@/database/tag.model'
-import { CreateQuestionParams, GetQuestionByIdParams, GetQuestionsParams } from './shared.types'
+import {
+  CreateQuestionParams,
+  GetQuestionByIdParams,
+  GetQuestionsParams,
+  GetSavedQuestionsParams,
+  QuestionVoteParams,
+  ToggleSaveQuestionParams
+} from './shared.types'
 import User from '@/database/user.model'
 import { revalidatePath } from 'next/cache'
+import { FilterQuery } from 'mongoose'
 
 export async function createQuestion(params: CreateQuestionParams) {
   try {
@@ -74,6 +82,121 @@ export async function getQuestionById(params: GetQuestionByIdParams) {
       .populate({ path: 'author', model: User, select: 'clerkId name picture' })
 
     return { question }
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export async function upvoteQuestion(params: QuestionVoteParams) {
+  try {
+    connectToDatabase()
+
+    const { questionId, hasdownVoted, hasupVoted, path, userId } = params
+
+    let updateQuery = {}
+    if (hasupVoted) {
+      updateQuery = { $pull: { upvotes: userId } }
+    } else if (hasdownVoted) {
+      updateQuery = { $pull: { downvotes: userId }, $push: { upvotes: userId } }
+    } else {
+      updateQuery = { $addToSet: { upvotes: userId } }
+    }
+
+    const question = await Question.findByIdAndUpdate(questionId, updateQuery, { new: true })
+
+    if (!question) {
+      throw new Error('Question not found!')
+    }
+
+    // TODO: calculate author reputation
+
+    revalidatePath(path)
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export async function downvoteQuestion(params: QuestionVoteParams) {
+  try {
+    connectToDatabase()
+
+    const { questionId, hasdownVoted, hasupVoted, path, userId } = params
+
+    let updateQuery = {}
+    if (hasdownVoted) {
+      updateQuery = { $pull: { downvotes: userId } }
+    } else if (hasupVoted) {
+      updateQuery = { $pull: { upvotes: userId }, $push: { downvotes: userId } }
+    } else {
+      updateQuery = { $addToSet: { downvotes: userId } }
+    }
+
+    const question = await Question.findByIdAndUpdate(questionId, updateQuery, { new: true })
+
+    if (!question) {
+      throw new Error('Question not found!')
+    }
+
+    // TODO: calculate author reputation
+
+    revalidatePath(path)
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export async function toggleSaveQuestion(params: ToggleSaveQuestionParams) {
+  try {
+    connectToDatabase()
+
+    const { path, questionId, userId } = params
+
+    const user = await User.findById(userId)
+    if (!user) {
+      throw new Error('User not found!')
+    }
+
+    const isQuestionSaved = user.saved.includes(questionId)
+    if (isQuestionSaved) {
+      await User.findByIdAndUpdate(userId, { $pull: { saved: questionId } }, { new: true })
+    } else {
+      await User.findByIdAndUpdate(userId, { $push: { saved: questionId } }, { new: true })
+    }
+
+    revalidatePath(path)
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export async function getSavedQuestions(params: GetSavedQuestionsParams) {
+  try {
+    connectToDatabase()
+
+    const { clerkId, searchQuery } = params
+
+    const user = await User.findOne({ clerkId })
+
+    if (!user) {
+      throw new Error('User not found!')
+    }
+
+    const filterQuery: FilterQuery<typeof Question> = { _id: { $in: user.saved } }
+
+    if (searchQuery) {
+      filterQuery.title = { $regex: new RegExp(searchQuery, 'i') }
+    }
+
+    const savedQuestions = await Question.find(filterQuery)
+      .populate({ path: 'tags', model: Tag })
+      .populate({ path: 'author', model: User })
+      .sort({ createdAt: -1 })
+
+    return savedQuestions
   } catch (error) {
     console.log(error)
     throw error

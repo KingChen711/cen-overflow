@@ -18,7 +18,7 @@ type Props = {
       picture: string
     }
     createdAt: Date
-    upvotes: number
+    upvotes: Array<object>
     answers: Array<object>
     views: number
   }
@@ -60,7 +60,7 @@ function QuestionCard({ question }: Props) {
             alt='like count'
             imgUrl='/assets/icons/like.svg'
             title='Votes'
-            value={formatNumber(question.upvotes)}
+            value={formatNumber(question.upvotes.length)}
             textStyles='small-medium text-dark400_light800'
           />
           <Metric

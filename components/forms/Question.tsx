@@ -11,29 +11,30 @@ import { Editor } from '@tinymce/tinymce-react'
 import React, { useRef, useState } from 'react'
 import { Badge } from '../ui/badge'
 import Image from 'next/image'
-import { createQuestion } from '@/lib/actions/question.action'
+import { createQuestion, editQuestion } from '@/lib/actions/question.action'
 import { usePathname, useRouter } from 'next/navigation'
 import { useTheme } from '@/contexts/ThemeProvider'
 
-const type: any = 'create'
-
 type Props = {
   mongoUserId: string
+  type?: 'create' | 'edit'
+  stringifyQuestion?: string
 }
 
-export default function Question({ mongoUserId }: Props) {
+export default function Question({ mongoUserId, type = 'create', stringifyQuestion }: Props) {
   const router = useRouter()
   const pathName = usePathname()
   const editorRef = useRef(null)
   const { theme } = useTheme()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const parsedQuestion = stringifyQuestion ? JSON.parse(stringifyQuestion) : undefined
 
   const form = useForm<z.infer<typeof questionSchema>>({
     resolver: zodResolver(questionSchema),
     defaultValues: {
-      title: '',
-      explanation: '',
-      tags: []
+      title: parsedQuestion?.title || '',
+      explanation: parsedQuestion?.content || '',
+      tags: parsedQuestion?.tags ? parsedQuestion.tags.map((t: any) => t.name) : []
     }
   })
 
@@ -42,15 +43,28 @@ export default function Question({ mongoUserId }: Props) {
     try {
       // make am async call to API -> create a question
       // contains all form data
-      await createQuestion({
-        title: values.title,
-        content: values.explanation,
-        tags: values.tags,
-        author: JSON.parse(mongoUserId),
-        path: pathName
-      })
-      // navigate to home page
-      router.push('/')
+      if (type === 'create') {
+        await createQuestion({
+          title: values.title,
+          content: values.explanation,
+          tags: values.tags,
+          author: JSON.parse(mongoUserId),
+          path: pathName
+        })
+
+        router.push('/')
+      }
+
+      if (type === 'edit') {
+        await editQuestion({
+          content: values.explanation,
+          path: pathName,
+          questionId: parsedQuestion._id,
+          title: values.title
+        })
+
+        router.push(`/question/${parsedQuestion._id}`)
+      }
     } catch (error) {
     } finally {
       setIsSubmitting(false)
@@ -131,7 +145,7 @@ export default function Question({ mongoUserId }: Props) {
                   }
                   onBlur={field.onBlur}
                   onEditorChange={(content) => field.onChange(content)}
-                  initialValue=''
+                  initialValue={form.getValues('explanation')}
                   init={{
                     height: 350,
                     menubar: false,
@@ -188,6 +202,7 @@ export default function Question({ mongoUserId }: Props) {
                     onKeyDown={(e) => {
                       handleInputKeyDown(e, field)
                     }}
+                    disabled={type === 'edit'}
                   />
                   {field.value.length > 0 && (
                     <div className='flex-start mt-2.5 gap-2.5'>
@@ -200,14 +215,18 @@ export default function Question({ mongoUserId }: Props) {
                             >
                               {tag}
 
-                              <Image
-                                src='/assets/icons/close.svg'
-                                height={12}
-                                width={12}
-                                alt=''
-                                className='cursor-pointer object-contain invert-0 dark:invert'
-                                onClick={() => handleTagRemove(tag, field)}
-                              />
+                              {type !== 'edit' && (
+                                <Image
+                                  src='/assets/icons/close.svg'
+                                  height={12}
+                                  width={12}
+                                  alt=''
+                                  className='cursor-pointer object-contain invert-0 dark:invert'
+                                  onClick={() => {
+                                    handleTagRemove(tag, field)
+                                  }}
+                                />
+                              )}
                             </Badge>
                           )
                         })

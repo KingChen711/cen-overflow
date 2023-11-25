@@ -7,11 +7,13 @@ import {
   DeleteUserParams,
   GetAllUsersParams,
   GetUserByIdParams,
+  GetUserStatsParams,
   UpdateUserParams
 } from './shared.types'
 import { revalidatePath } from 'next/cache'
 import Question from '@/database/question.model'
 import Answer from '@/database/answer.model'
+import Tag from '@/database/tag.model'
 
 export async function getAllUsers(params: GetAllUsersParams) {
   try {
@@ -115,6 +117,44 @@ export async function getUserInfo(params: GetUserByIdParams) {
     const totalAnswers = await Answer.countDocuments({ author: user._id })
 
     return { totalQuestions, totalAnswers, user }
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export async function getUserQuestions(params: GetUserStatsParams) {
+  try {
+    await connectToDatabase()
+
+    const { userId } = params
+
+    const totalQuestions = await Question.countDocuments({ author: userId })
+    const questions = await Question.find({ author: userId })
+      .populate({ path: 'tags', model: Tag })
+      .populate({ path: 'author', model: User })
+      .sort({ views: -1, upvotes: -1 })
+
+    return { totalQuestions, questions }
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export async function getUserAnswers(params: GetUserStatsParams) {
+  try {
+    await connectToDatabase()
+
+    const { userId } = params
+
+    const totalAnswers = await Answer.countDocuments({ author: userId })
+    const answers = await Answer.find({ author: userId })
+      .populate({ path: 'question', model: Question })
+      .populate({ path: 'author', model: User })
+      .sort({ views: -1, upvotes: -1 })
+
+    return { totalAnswers, answers }
   } catch (error) {
     console.log(error)
     throw error

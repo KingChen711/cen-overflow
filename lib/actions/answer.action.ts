@@ -2,10 +2,11 @@
 
 import Answer from '@/database/answer.model'
 import { connectToDatabase } from '../mongoose'
-import { AnswerVoteParams, CreateAnswerParams, GetAnswersParams } from './shared.types'
+import { AnswerVoteParams, CreateAnswerParams, DeleteAnswerParams, GetAnswersParams } from './shared.types'
 import { revalidatePath } from 'next/cache'
 import Question from '@/database/question.model'
 import User from '@/database/user.model'
+import Interaction from '@/database/interaction.model'
 
 export async function createAnswer(params: CreateAnswerParams) {
   try {
@@ -101,6 +102,26 @@ export async function downvoteAnswer(params: AnswerVoteParams) {
     }
 
     // TODO: calculate author reputation
+
+    revalidatePath(path)
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export async function deleteAnswer(params: DeleteAnswerParams) {
+  try {
+    await connectToDatabase()
+
+    const { answerId, path } = params
+
+    const answer = await Answer.findByIdAndDelete(answerId)
+    if (!answer) {
+      throw new Error('Answer not found')
+    }
+    await Question.findByIdAndUpdate(answer.question, { $pull: { answers: answerId } })
+    await Interaction.deleteMany({ answer: answerId })
 
     revalidatePath(path)
   } catch (error) {

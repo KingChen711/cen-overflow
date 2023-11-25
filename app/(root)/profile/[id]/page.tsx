@@ -60,14 +60,18 @@ async function ProfilePage({ params }: Props) {
         <Tabs defaultValue='top-posts' className='flex-1'>
           <TabsList className='background-light800_dark400 min-h-[42px] p-1'>
             <TabsTrigger className='tab' value='top-posts'>
-              <QuestionsTab />
+              Top Posts
             </TabsTrigger>
             <TabsTrigger className='tab' value='answers'>
-              <AnswersTab />
+              Answers
             </TabsTrigger>
           </TabsList>
-          <TabsContent value='top-posts'>Some posts</TabsContent>
-          <TabsContent value='answers'>Some answers</TabsContent>
+          <TabsContent value='top-posts' className='mt-5 flex w-full flex-col gap-6'>
+            <QuestionsTab userId={JSON.stringify(user._id)} />
+          </TabsContent>
+          <TabsContent value='answers' className='flex w-full flex-col gap-6'>
+            <AnswersTab userId={JSON.stringify(user._id)} />
+          </TabsContent>
         </Tabs>
         <div className='flex min-w-[278px] flex-col max-lg:hidden'>
           <h3 className='h3-bold text-dark200_light900'>Top Tags</h3>

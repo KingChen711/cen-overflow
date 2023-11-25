@@ -5,6 +5,8 @@ import { connectToDatabase } from '../mongoose'
 import Tag from '@/database/tag.model'
 import {
   CreateQuestionParams,
+  DeleteQuestionParams,
+  EditQuestionParams,
   GetQuestionByIdParams,
   GetQuestionsParams,
   GetSavedQuestionsParams,
@@ -14,6 +16,8 @@ import {
 import User from '@/database/user.model'
 import { revalidatePath } from 'next/cache'
 import { FilterQuery } from 'mongoose'
+import Answer from '@/database/answer.model'
+import Interaction from '@/database/interaction.model'
 
 export async function createQuestion(params: CreateQuestionParams) {
   try {
@@ -197,6 +201,47 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
       .sort({ createdAt: -1 })
 
     return savedQuestions
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export async function deleteQuestion(params: DeleteQuestionParams) {
+  try {
+    await connectToDatabase()
+
+    const { questionId, path } = params
+
+    await Question.findByIdAndDelete(questionId)
+    await Answer.deleteMany({ question: questionId })
+    await Interaction.deleteMany({ question: questionId })
+    await Tag.updateMany({ questions: { $in: [questionId] } }, { $pull: { questions: questionId } })
+
+    revalidatePath(path)
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export async function editQuestion(params: EditQuestionParams) {
+  try {
+    await connectToDatabase()
+
+    const { questionId, content, path, title } = params
+
+    const question = await Question.findById(questionId)
+
+    if (!question) {
+      throw new Error('Question not found')
+    }
+    question.title = title
+    question.content = content
+
+    await question.save()
+
+    revalidatePath(path)
   } catch (error) {
     console.log(error)
     throw error

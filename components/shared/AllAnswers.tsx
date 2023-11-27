@@ -12,11 +12,11 @@ type Props = {
   questionId: string
   userId?: string
   page?: number
-  filter?: number
+  filter?: string
 }
 
 async function AllAnswers({ questionId, userId, page, filter }: Props) {
-  const result = await getAnswers({ questionId: JSON.parse(questionId) })
+  const result = await getAnswers({ questionId: JSON.parse(questionId), page, sortBy: filter })
 
   return (
     <div className='mt-11'>

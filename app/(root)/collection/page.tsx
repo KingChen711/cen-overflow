@@ -7,12 +7,23 @@ import { getSavedQuestions } from '@/lib/actions/question.action'
 import { auth } from '@clerk/nextjs'
 import React from 'react'
 
-async function CollectionPage() {
+type Props = {
+  searchParams: {
+    q?: string
+    filter?: string
+  }
+}
+
+async function CollectionPage({ searchParams }: Props) {
   const { userId: clerkId } = auth()
 
   if (!clerkId) return null
 
-  const savedQuestions = await getSavedQuestions({ clerkId })
+  const savedQuestions = await getSavedQuestions({
+    clerkId,
+    searchQuery: searchParams?.q,
+    filter: searchParams?.filter
+  })
 
   return (
     <>

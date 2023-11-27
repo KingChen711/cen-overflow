@@ -3,10 +3,13 @@
 import { HomePageFilters } from '@/constants/filters'
 import React from 'react'
 import { Button } from '../ui/button'
-import { cn } from '@/lib/utils'
+import { cn, formUrlQuery } from '@/lib/utils'
+import { useSearchParams, useRouter } from 'next/navigation'
 
 function HomeFilters() {
-  const active = 'newest'
+  const searchParams = useSearchParams()
+  const active = searchParams.get('filter')
+  const router = useRouter()
 
   return (
     <div className='mt-10 hidden flex-wrap gap-3 md:flex'>
@@ -14,7 +17,14 @@ function HomeFilters() {
         return (
           <Button
             key={item.value}
-            onClick={() => {}}
+            onClick={() => {
+              const newUrl = formUrlQuery({
+                params: searchParams.toString(),
+                key: 'filter',
+                value: item.value !== active ? item.value : null
+              })
+              router.push(newUrl, { scroll: false })
+            }}
             className={cn(
               'body-medium rounded-lg px-6 py-3 capitalize shadow-none',
               active === item.value

@@ -22,15 +22,23 @@ function LocalSearchBar({ route, iconPosition, imgSrc, placeholder, className }:
   const [searchQuery, setSearchQuery] = useState(query || '')
 
   useEffect(() => {
+    if (!query) {
+      setSearchQuery('')
+    }
+  }, [query])
+
+  useEffect(() => {
     const handleSearch = () => {
-      const newUrl = formUrlQuery({ params: searchParams.toString(), key: 'q', value: searchQuery })
+      const newUrl = formUrlQuery({
+        params: searchParams.toString(),
+        key: 'q',
+        value: searchQuery !== '' ? searchQuery : null
+      })
       router.push(newUrl, { scroll: false })
     }
 
     const timer = setTimeout(() => {
-      if (searchQuery) {
-        handleSearch()
-      }
+      handleSearch()
     }, 300)
 
     return () => {

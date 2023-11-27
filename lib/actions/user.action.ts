@@ -14,14 +14,44 @@ import { revalidatePath } from 'next/cache'
 import Question from '@/database/question.model'
 import Answer from '@/database/answer.model'
 import Tag from '@/database/tag.model'
+import { FilterQuery } from 'mongoose'
 
 export async function getAllUsers(params: GetAllUsersParams) {
   try {
     await connectToDatabase()
 
-    // const { page = 1, pageSize = 20, filter, searchQuery } = params
+    const { searchQuery, filter } = params
 
-    const users = await User.find({}).sort({ createdAt: -1 })
+    const query: FilterQuery<typeof User> = {}
+
+    if (searchQuery) {
+      query.$or = [
+        {
+          name: { $regex: new RegExp(searchQuery, 'i') }
+        },
+        {
+          username: { $regex: new RegExp(searchQuery, 'i') }
+        }
+      ]
+    }
+
+    let sortOptions = {}
+
+    switch (filter) {
+      case 'new_users':
+        sortOptions = { joinedAt: -1 }
+        break
+      case 'old_users':
+        sortOptions = { joinedAt: 1 }
+        break
+      case 'top_contributors':
+        sortOptions = { reputation: -1 }
+        break
+      default:
+        break
+    }
+
+    const users = await User.find(query).sort(sortOptions)
 
     return { users }
   } catch (error) {

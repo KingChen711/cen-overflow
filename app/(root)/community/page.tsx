@@ -8,12 +8,13 @@ import React from 'react'
 
 type Props = {
   searchParams: {
-    q: string
+    q?: string
+    filter?: string
   }
 }
 
 async function CommunityPage({ searchParams }: Props) {
-  const result = await getAllUsers({})
+  const result = await getAllUsers({ searchQuery: searchParams?.q, filter: searchParams?.filter })
 
   return (
     <>

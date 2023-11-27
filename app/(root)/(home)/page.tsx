@@ -11,13 +11,13 @@ import { getQuestions } from '@/lib/actions/question.action'
 
 type Props = {
   searchParams: {
-    q: string
+    q?: string
+    filter?: string
   }
 }
 
 async function Home({ searchParams }: Props) {
-  const result = await getQuestions({})
-  console.log('hello')
+  const result = await getQuestions({ searchQuery: searchParams?.q, filter: searchParams?.filter })
 
   return (
     <>

@@ -18,9 +18,13 @@ type Props = {
   params: {
     id: string
   }
+  searchParams: {
+    page?: number
+    filter?: string
+  }
 }
 
-async function QuestionDetailPage({ params }: Props) {
+async function QuestionDetailPage({ params, searchParams }: Props) {
   const result = await getQuestionById({ questionId: params.id })
   const { userId: clerkId } = auth()
 
@@ -89,6 +93,8 @@ async function QuestionDetailPage({ params }: Props) {
       <AllAnswers
         questionId={JSON.stringify(result.question._id)}
         userId={mongoUser ? JSON.stringify(mongoUser._id) : undefined}
+        page={searchParams?.page}
+        filter={searchParams?.filter}
       />
 
       <Answer

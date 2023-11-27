@@ -9,13 +9,13 @@ type Props = {
     id: string
   }
   searchParams: {
-    q: string
+    q?: string
   }
 }
 
 async function TagDetailPage({ params, searchParams }: Props) {
   const { id: tagId } = params
-  const { tag, questions } = await getQuestionsByTagIdParams({ tagId, searchQuery: searchParams.q, page: 1 })
+  const { tag, questions } = await getQuestionsByTagIdParams({ tagId, searchQuery: searchParams?.q, page: 1 })
 
   return (
     <>

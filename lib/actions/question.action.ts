@@ -63,10 +63,43 @@ export async function getQuestions(params: GetQuestionsParams) {
   try {
     await connectToDatabase()
 
-    const questions = await Question.find()
+    const { searchQuery, filter } = params
+
+    const query: FilterQuery<typeof Question> = {}
+
+    if (searchQuery) {
+      query.$or = [
+        {
+          title: { $regex: new RegExp(searchQuery, 'i') }
+        },
+        {
+          content: { $regex: new RegExp(searchQuery, 'i') }
+        }
+      ]
+    }
+
+    let sortOptions = {}
+
+    switch (filter) {
+      case 'newest':
+        sortOptions = { createdAt: -1 }
+        break
+      case 'frequent':
+        sortOptions = { views: -1 }
+        break
+      case 'unanswered':
+        query.answers = { $size: 0 }
+        break
+      case 'recommended':
+        break
+      default:
+        break
+    }
+
+    const questions = await Question.find(query)
       .populate({ path: 'tags', model: Tag })
       .populate({ path: 'author', model: User })
-      .sort({ createdAt: -1 })
+      .sort(sortOptions)
 
     return { questions }
   } catch (error) {
@@ -181,7 +214,7 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
   try {
     await connectToDatabase()
 
-    const { clerkId, searchQuery } = params
+    const { clerkId, searchQuery, filter } = params
 
     const user = await User.findOne({ clerkId })
 
@@ -189,16 +222,45 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
       throw new Error('User not found!')
     }
 
-    const filterQuery: FilterQuery<typeof Question> = { _id: { $in: user.saved } }
+    const query: FilterQuery<typeof Question> = { _id: { $in: user.saved } }
 
     if (searchQuery) {
-      filterQuery.title = { $regex: new RegExp(searchQuery, 'i') }
+      query.$or = [
+        {
+          title: { $regex: new RegExp(searchQuery, 'i') }
+        },
+        {
+          content: { $regex: new RegExp(searchQuery, 'i') }
+        }
+      ]
     }
 
-    const savedQuestions = await Question.find(filterQuery)
+    let sortOptions = {}
+
+    switch (filter) {
+      case 'most_recent':
+        sortOptions = { createdAt: -1 }
+        break
+      case 'oldest':
+        sortOptions = { createdAt: 1 }
+        break
+      case 'most_viewed':
+        sortOptions = { views: -1 }
+        break
+      case 'most_voted':
+        sortOptions = { upvotes: -1 }
+        break
+      case 'most_answered':
+        sortOptions = { answers: -1 }
+        break
+      default:
+        break
+    }
+
+    const savedQuestions = await Question.find(query)
       .populate({ path: 'tags', model: Tag })
       .populate({ path: 'author', model: User })
-      .sort({ createdAt: -1 })
+      .sort(sortOptions)
 
     return savedQuestions
   } catch (error) {

@@ -15,6 +15,7 @@ type Props = {
   author: {
     clerkId: string
     name: string
+    picture: string
   }
   _id: string
   upvotes: number
@@ -37,7 +38,13 @@ function AnswerCard({ question, createdAt, author, upvotes, _id }: Props) {
       </div>
       <div className='flex-between mt-6 w-full flex-wrap gap-3'>
         <a className='flex-center gap-1' href='/profile/user_2YItNhrEVhQ3J3dC8WbvO5l16oo'>
-          <Image alt='user avatar' width={16} height={16} className='rounded-full object-contain' src='' />
+          <Image
+            alt='user avatar'
+            width={16}
+            height={16}
+            className='rounded-full object-contain'
+            src={author.picture}
+          />
           <p className='body-medium text-dark400_light700 flex items-center gap-1'>
             {author.name}
             <span className='small-regular line-clamp-1 max-sm:hidden'>• answered {getTimestamp(createdAt)}</span>

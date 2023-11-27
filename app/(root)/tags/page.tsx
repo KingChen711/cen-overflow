@@ -6,8 +6,15 @@ import { TagFilters } from '@/constants/filters'
 import { getAllTags } from '@/lib/actions/tag.actions'
 import React from 'react'
 
-async function TagsPage() {
-  const result = await getAllTags({})
+type Props = {
+  searchParams: {
+    q?: string
+    filter?: string
+  }
+}
+
+async function TagsPage({ searchParams }: Props) {
+  const result = await getAllTags({ searchQuery: searchParams?.q, filter: searchParams?.filter })
 
   return (
     <>

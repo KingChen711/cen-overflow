@@ -5,14 +5,40 @@ import { connectToDatabase } from '../mongoose'
 import { GetAllTagsParams, GetQuestionsByTagIdParams, GetTopInteractedTagsParams } from './shared.types'
 import Tag from '@/database/tag.model'
 import Question from '@/database/question.model'
+import { FilterQuery } from 'mongoose'
 
 export async function getAllTags(params: GetAllTagsParams) {
   try {
     await connectToDatabase()
 
-    // const {  } = params
+    const { searchQuery, filter } = params
 
-    const tags = await Tag.find({})
+    const query: FilterQuery<typeof Tag> = {}
+
+    if (searchQuery) {
+      query.name = new RegExp(searchQuery, 'i')
+    }
+
+    let sortOptions = {}
+
+    switch (filter) {
+      case 'popular':
+        sortOptions = { questions: -1 }
+        break
+      case 'recent':
+        sortOptions = { createdOn: -1 }
+        break
+      case 'name':
+        sortOptions = { name: 1 }
+        break
+      case 'old':
+        sortOptions = { createdOn: 1 }
+        break
+      default:
+        break
+    }
+
+    const tags = await Tag.find(query).sort(sortOptions)
 
     return { tags }
   } catch (error) {
@@ -49,14 +75,27 @@ export async function getQuestionsByTagIdParams(params: GetQuestionsByTagIdParam
   try {
     await connectToDatabase()
 
-    const { tagId } = params
+    const { tagId, searchQuery } = params
 
     const tag = await Tag.findById(tagId)
     if (!tag) {
       throw new Error('Tag not found!')
     }
 
-    const matchedQuestions = await Question.find({ tags: { $in: [tagId] } })
+    const queryQuestions: FilterQuery<typeof Question> = { tags: { $in: [tagId] } }
+
+    if (searchQuery) {
+      queryQuestions.$or = [
+        {
+          title: { $regex: new RegExp(searchQuery, 'i') }
+        },
+        {
+          content: { $regex: new RegExp(searchQuery, 'i') }
+        }
+      ]
+    }
+
+    const matchedQuestions = await Question.find(queryQuestions)
       .populate({ path: 'tags', model: Tag })
       .populate({ path: 'author', model: User })
       .sort({ createdAt: -1 })

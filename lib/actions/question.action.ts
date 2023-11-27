@@ -225,6 +225,19 @@ export async function deleteQuestion(params: DeleteQuestionParams) {
   }
 }
 
+export async function getHotQuestions() {
+  try {
+    await connectToDatabase()
+
+    const hotQuestions = await Question.find().sort({ view: -1, upvotes: -1 }).limit(5)
+
+    return { questions: hotQuestions }
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
 export async function editQuestion(params: EditQuestionParams) {
   try {
     await connectToDatabase()

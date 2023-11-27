@@ -1,9 +1,10 @@
 'use client'
 
 import { Input } from '@/components/ui/input'
-import { cn } from '@/lib/utils'
+import { cn, formUrlQuery } from '@/lib/utils'
 import Image from 'next/image'
-import React from 'react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import React, { useEffect, useState } from 'react'
 
 type Props = {
   route: string
@@ -14,6 +15,29 @@ type Props = {
 }
 
 function LocalSearchBar({ route, iconPosition, imgSrc, placeholder, className }: Props) {
+  const router = useRouter()
+  const pathName = usePathname()
+  const searchParams = useSearchParams()
+  const query = searchParams.get('q')
+  const [searchQuery, setSearchQuery] = useState(query || '')
+
+  useEffect(() => {
+    const handleSearch = () => {
+      const newUrl = formUrlQuery({ params: searchParams.toString(), key: 'q', value: searchQuery })
+      router.push(newUrl, { scroll: false })
+    }
+
+    const timer = setTimeout(() => {
+      if (searchQuery) {
+        handleSearch()
+      }
+    }, 300)
+
+    return () => {
+      clearTimeout(timer)
+    }
+  }, [searchQuery, pathName, router, query, searchParams])
+
   return (
     <div
       className={cn(
@@ -24,7 +48,11 @@ function LocalSearchBar({ route, iconPosition, imgSrc, placeholder, className }:
       {iconPosition === 'left' && <Image src={imgSrc} alt='search' width={24} height={24} className='cursor-pointer' />}
 
       <Input
+        value={searchQuery}
         type='text'
+        onChange={(e) => {
+          setSearchQuery(e.target.value)
+        }}
         placeholder={placeholder}
         className='paragraph-regular no-focus placeholder text-dark400_light700 background-light800_darkgradient border-none shadow-none outline-none'
       />

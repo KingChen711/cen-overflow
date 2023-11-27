@@ -6,7 +6,13 @@ import { getAllUsers } from '@/lib/actions/user.action'
 import Link from 'next/link'
 import React from 'react'
 
-async function CommunityPage() {
+type Props = {
+  searchParams: {
+    q: string
+  }
+}
+
+async function CommunityPage({ searchParams }: Props) {
   const result = await getAllUsers({})
 
   return (

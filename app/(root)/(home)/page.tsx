@@ -9,8 +9,15 @@ import QuestionCard from '@/components/cards/QuestionCard'
 import NoResult from '@/components/shared/NoResult'
 import { getQuestions } from '@/lib/actions/question.action'
 
-async function Home() {
+type Props = {
+  searchParams: {
+    q: string
+  }
+}
+
+async function Home({ searchParams }: Props) {
   const result = await getQuestions({})
+  console.log('hello')
 
   return (
     <>

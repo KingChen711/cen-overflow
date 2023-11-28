@@ -33,7 +33,7 @@ export async function createAnswer(params: CreateAnswerParams) {
 export async function getAnswers(params: GetAnswersParams) {
   try {
     await connectToDatabase()
-    const { questionId, sortBy } = params
+    const { questionId, sortBy, page = 1, pageSize = 10 } = params
 
     let sortOptions = {}
 
@@ -62,8 +62,13 @@ export async function getAnswers(params: GetAnswersParams) {
         select: '_id clerkId name picture'
       })
       .sort({ createdAt: -1 })
+      .skip(pageSize * (page - 1))
+      .limit(pageSize)
 
-    return { answers }
+    const answersCount = await Answer.find({ question: questionId }).countDocuments()
+    const pageCount = Math.ceil(answersCount / pageSize)
+
+    return { answers, answersCount, pageCount }
   } catch (error) {
     console.log(error)
     throw error

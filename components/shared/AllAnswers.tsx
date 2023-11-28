@@ -7,26 +7,31 @@ import Image from 'next/image'
 import { getTimestamp } from '@/lib/utils'
 import ParseHTML from './ParseHTML'
 import Votes from './Votes'
+import Pagination from './Pagination'
 
 type Props = {
   questionId: string
   userId?: string
-  page?: number
+  page: number
   filter?: string
 }
 
 async function AllAnswers({ questionId, userId, page, filter }: Props) {
-  const result = await getAnswers({ questionId: JSON.parse(questionId), page, sortBy: filter })
+  const { answers, answersCount, pageCount } = await getAnswers({
+    questionId: JSON.parse(questionId),
+    page,
+    sortBy: filter
+  })
 
   return (
     <div className='mt-11'>
       <div className='flex items-center justify-between'>
-        <h3 className='primary-text-gradient'>{result.answers.length} Answers</h3>
+        <h3 className='primary-text-gradient'>{answersCount} Answers</h3>
         <Filter filters={AnswerFilters} />
       </div>
 
       <div>
-        {result.answers.map((answer) => {
+        {answers.map((answer) => {
           return (
             <article key={answer._id} className='light-border border-b py-10'>
               <div className='flex items-center justify-between'>
@@ -70,6 +75,8 @@ async function AllAnswers({ questionId, userId, page, filter }: Props) {
           )
         })}
       </div>
+
+      <Pagination pageNumber={page} totalPages={pageCount} className='mt-10' />
     </div>
   )
 }

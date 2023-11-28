@@ -63,7 +63,7 @@ export async function getQuestions(params: GetQuestionsParams) {
   try {
     await connectToDatabase()
 
-    const { searchQuery, filter } = params
+    const { searchQuery, filter, page = 1, pageSize = 10 } = params
 
     const query: FilterQuery<typeof Question> = {}
 
@@ -100,8 +100,13 @@ export async function getQuestions(params: GetQuestionsParams) {
       .populate({ path: 'tags', model: Tag })
       .populate({ path: 'author', model: User })
       .sort(sortOptions)
+      .skip(pageSize * (page - 1))
+      .limit(pageSize)
 
-    return { questions }
+    const questionsCount = await Question.find(query).countDocuments()
+    const pageCount = Math.ceil(questionsCount / pageSize)
+
+    return { questions, pageCount }
   } catch (error) {
     console.log(error)
     throw error
@@ -214,7 +219,7 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
   try {
     await connectToDatabase()
 
-    const { clerkId, searchQuery, filter } = params
+    const { clerkId, searchQuery, filter, page = 1, pageSize = 10 } = params
 
     const user = await User.findOne({ clerkId })
 
@@ -261,8 +266,13 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
       .populate({ path: 'tags', model: Tag })
       .populate({ path: 'author', model: User })
       .sort(sortOptions)
+      .skip(pageSize * (page - 1))
+      .limit(pageSize)
 
-    return savedQuestions
+    const questionsCount = await Question.find(query).countDocuments()
+    const pageCount = Math.ceil(questionsCount / pageSize)
+
+    return { questions: savedQuestions, pageCount }
   } catch (error) {
     console.log(error)
     throw error

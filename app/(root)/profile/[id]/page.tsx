@@ -16,9 +16,12 @@ type Props = {
   params: {
     id: string
   }
+  searchParams: {
+    page?: number
+  }
 }
 
-async function ProfilePage({ params }: Props) {
+async function ProfilePage({ params, searchParams }: Props) {
   const { id: userId } = params
   const { totalAnswers, totalQuestions, user } = await getUserInfo({ userId })
   const { userId: clerkId } = auth()
@@ -67,10 +70,10 @@ async function ProfilePage({ params }: Props) {
             </TabsTrigger>
           </TabsList>
           <TabsContent value='top-posts' className='mt-5 flex w-full flex-col gap-6'>
-            <QuestionsTab userId={JSON.stringify(user._id)} />
+            <QuestionsTab searchParams={searchParams} userId={JSON.stringify(user._id)} />
           </TabsContent>
           <TabsContent value='answers' className='flex w-full flex-col gap-6'>
-            <AnswersTab userId={JSON.stringify(user._id)} />
+            <AnswersTab searchParams={searchParams} userId={JSON.stringify(user._id)} />
           </TabsContent>
         </Tabs>
         <div className='flex min-w-[278px] flex-col max-lg:hidden'>

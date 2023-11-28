@@ -8,16 +8,22 @@ import HomeFilters from '@/components/home/HomeFilters'
 import QuestionCard from '@/components/cards/QuestionCard'
 import NoResult from '@/components/shared/NoResult'
 import { getQuestions } from '@/lib/actions/question.action'
+import Pagination from '@/components/shared/Pagination'
 
 type Props = {
   searchParams: {
     q?: string
     filter?: string
+    page?: string
   }
 }
 
 async function Home({ searchParams }: Props) {
-  const result = await getQuestions({ searchQuery: searchParams?.q, filter: searchParams?.filter })
+  const { pageCount, questions } = await getQuestions({
+    searchQuery: searchParams.q,
+    filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1
+  })
 
   return (
     <>
@@ -48,8 +54,8 @@ async function Home({ searchParams }: Props) {
       <HomeFilters />
 
       <div className='mt-10 flex w-full flex-col gap-6'>
-        {result.questions.length > 0 ? (
-          result.questions.map((question) => {
+        {questions.length > 0 ? (
+          questions.map((question) => {
             return <QuestionCard key={question._id} question={question as any} />
           })
         ) : (
@@ -62,6 +68,8 @@ async function Home({ searchParams }: Props) {
           />
         )}
       </div>
+
+      <Pagination pageNumber={searchParams.page ? +searchParams.page : 1} totalPages={pageCount} className='mt-10' />
     </>
   )
 }

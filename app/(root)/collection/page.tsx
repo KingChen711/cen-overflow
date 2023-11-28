@@ -1,6 +1,7 @@
 import QuestionCard from '@/components/cards/QuestionCard'
 import Filter from '@/components/shared/Filter'
 import NoResult from '@/components/shared/NoResult'
+import Pagination from '@/components/shared/Pagination'
 import LocalSearchBar from '@/components/shared/search/LocalSearchBar'
 import { QuestionFilters } from '@/constants/filters'
 import { getSavedQuestions } from '@/lib/actions/question.action'
@@ -11,6 +12,7 @@ type Props = {
   searchParams: {
     q?: string
     filter?: string
+    page?: number
   }
 }
 
@@ -19,10 +21,11 @@ async function CollectionPage({ searchParams }: Props) {
 
   if (!clerkId) return null
 
-  const savedQuestions = await getSavedQuestions({
+  const { pageCount, questions } = await getSavedQuestions({
     clerkId,
-    searchQuery: searchParams?.q,
-    filter: searchParams?.filter
+    searchQuery: searchParams.q,
+    filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1
   })
 
   return (
@@ -42,8 +45,8 @@ async function CollectionPage({ searchParams }: Props) {
       </div>
 
       <div className='mt-10 flex w-full flex-col gap-6'>
-        {savedQuestions.length > 0 ? (
-          savedQuestions.map((question: any) => {
+        {questions.length > 0 ? (
+          questions.map((question: any) => {
             return <QuestionCard key={question._id} question={question} />
           })
         ) : (
@@ -55,6 +58,8 @@ async function CollectionPage({ searchParams }: Props) {
           />
         )}
       </div>
+
+      <Pagination pageNumber={searchParams.page ? +searchParams.page : 1} totalPages={pageCount} className='mt-10' />
     </>
   )
 }

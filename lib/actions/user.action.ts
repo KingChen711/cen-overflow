@@ -20,7 +20,7 @@ export async function getAllUsers(params: GetAllUsersParams) {
   try {
     await connectToDatabase()
 
-    const { searchQuery, filter } = params
+    const { searchQuery, filter, page = 1, pageSize = 20 } = params
 
     const query: FilterQuery<typeof User> = {}
 
@@ -51,9 +51,15 @@ export async function getAllUsers(params: GetAllUsersParams) {
         break
     }
 
-    const users = await User.find(query).sort(sortOptions)
+    const users = await User.find(query)
+      .sort(sortOptions)
+      .skip(pageSize * (page - 1))
+      .limit(pageSize)
 
-    return { users }
+    const usersCount = await User.find(query).countDocuments()
+    const pageCount = Math.ceil(usersCount / pageSize)
+
+    return { users, pageCount }
   } catch (error) {
     console.log(error)
     throw error
@@ -157,15 +163,19 @@ export async function getUserQuestions(params: GetUserStatsParams) {
   try {
     await connectToDatabase()
 
-    const { userId } = params
+    const { userId, page = 1, pageSize = 10 } = params
 
-    const totalQuestions = await Question.countDocuments({ author: userId })
     const questions = await Question.find({ author: userId })
       .populate({ path: 'tags', model: Tag })
       .populate({ path: 'author', model: User })
       .sort({ views: -1, upvotes: -1 })
+      .skip(pageSize * (page - 1))
+      .limit(pageSize)
 
-    return { totalQuestions, questions }
+    const questionsCount = await Question.find({ author: userId }).countDocuments()
+    const pageCount = Math.ceil(questionsCount / pageSize)
+
+    return { questions, pageCount, questionsCount }
   } catch (error) {
     console.log(error)
     throw error
@@ -176,15 +186,20 @@ export async function getUserAnswers(params: GetUserStatsParams) {
   try {
     await connectToDatabase()
 
-    const { userId } = params
+    const { userId, page = 1, pageSize = 1 } = params
 
     const totalAnswers = await Answer.countDocuments({ author: userId })
     const answers = await Answer.find({ author: userId })
       .populate({ path: 'question', model: Question })
       .populate({ path: 'author', model: User })
       .sort({ views: -1, upvotes: -1 })
+      .skip(pageSize * (page - 1))
+      .limit(pageSize)
 
-    return { totalAnswers, answers }
+    const answersCount = await Answer.find({ author: userId }).countDocuments()
+    const pageCount = Math.ceil(answersCount / pageSize)
+
+    return { totalAnswers, answers, pageCount }
   } catch (error) {
     console.log(error)
     throw error

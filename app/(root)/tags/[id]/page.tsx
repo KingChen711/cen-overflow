@@ -1,5 +1,6 @@
 import QuestionCard from '@/components/cards/QuestionCard'
 import NoResult from '@/components/shared/NoResult'
+import Pagination from '@/components/shared/Pagination'
 import LocalSearchBar from '@/components/shared/search/LocalSearchBar'
 import { getQuestionsByTagIdParams } from '@/lib/actions/tag.actions'
 import React from 'react'
@@ -10,12 +11,17 @@ type Props = {
   }
   searchParams: {
     q?: string
+    page?: number
   }
 }
 
 async function TagDetailPage({ params, searchParams }: Props) {
   const { id: tagId } = params
-  const { tag, questions } = await getQuestionsByTagIdParams({ tagId, searchQuery: searchParams?.q, page: 1 })
+  const { tag, questions, pageCount } = await getQuestionsByTagIdParams({
+    tagId,
+    searchQuery: searchParams.q,
+    page: searchParams.page ? +searchParams.page : 1
+  })
 
   return (
     <>
@@ -44,6 +50,8 @@ async function TagDetailPage({ params, searchParams }: Props) {
           />
         )}
       </div>
+
+      <Pagination pageNumber={searchParams.page ? +searchParams.page : 1} totalPages={pageCount} className='mt-10' />
     </>
   )
 }

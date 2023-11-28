@@ -93,8 +93,8 @@ async function QuestionDetailPage({ params, searchParams }: Props) {
       <AllAnswers
         questionId={JSON.stringify(result.question._id)}
         userId={mongoUser ? JSON.stringify(mongoUser._id) : undefined}
-        page={searchParams?.page}
-        filter={searchParams?.filter}
+        page={searchParams.page ? +searchParams.page : 1}
+        filter={searchParams.filter}
       />
 
       <Answer

@@ -1,6 +1,7 @@
 import TagCard from '@/components/cards/TagCard'
 import Filter from '@/components/shared/Filter'
 import NoResult from '@/components/shared/NoResult'
+import Pagination from '@/components/shared/Pagination'
 import LocalSearchBar from '@/components/shared/search/LocalSearchBar'
 import { TagFilters } from '@/constants/filters'
 import { getAllTags } from '@/lib/actions/tag.actions'
@@ -10,11 +11,16 @@ type Props = {
   searchParams: {
     q?: string
     filter?: string
+    page?: number
   }
 }
 
 async function TagsPage({ searchParams }: Props) {
-  const result = await getAllTags({ searchQuery: searchParams?.q, filter: searchParams?.filter })
+  const { pageCount, tags } = await getAllTags({
+    searchQuery: searchParams.q,
+    filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1
+  })
 
   return (
     <>
@@ -33,8 +39,8 @@ async function TagsPage({ searchParams }: Props) {
       </div>
 
       <section className='mt-12 flex w-full flex-wrap gap-4'>
-        {result.tags.length > 0 ? (
-          result.tags.map((tag) => {
+        {tags.length > 0 ? (
+          tags.map((tag) => {
             return <TagCard key={tag._id} tag={tag} />
           })
         ) : (
@@ -46,6 +52,8 @@ async function TagsPage({ searchParams }: Props) {
           />
         )}
       </section>
+
+      <Pagination pageNumber={searchParams.page ? +searchParams.page : 1} totalPages={pageCount} className='mt-10' />
     </>
   )
 }

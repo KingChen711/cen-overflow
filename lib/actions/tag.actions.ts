@@ -11,7 +11,7 @@ export async function getAllTags(params: GetAllTagsParams) {
   try {
     await connectToDatabase()
 
-    const { searchQuery, filter } = params
+    const { searchQuery, filter, page = 1, pageSize = 20 } = params
 
     const query: FilterQuery<typeof Tag> = {}
 
@@ -38,9 +38,15 @@ export async function getAllTags(params: GetAllTagsParams) {
         break
     }
 
-    const tags = await Tag.find(query).sort(sortOptions)
+    const tags = await Tag.find(query)
+      .sort(sortOptions)
+      .skip(pageSize * (page - 1))
+      .limit(pageSize)
 
-    return { tags }
+    const tagsCount = await Tag.find(query).countDocuments()
+    const pageCount = Math.ceil(tagsCount / pageSize)
+
+    return { tags, pageCount }
   } catch (error) {
     console.log(error)
     throw error
@@ -75,7 +81,7 @@ export async function getQuestionsByTagIdParams(params: GetQuestionsByTagIdParam
   try {
     await connectToDatabase()
 
-    const { tagId, searchQuery } = params
+    const { tagId, searchQuery, page = 1, pageSize = 10 } = params
 
     const tag = await Tag.findById(tagId)
     if (!tag) {
@@ -99,8 +105,13 @@ export async function getQuestionsByTagIdParams(params: GetQuestionsByTagIdParam
       .populate({ path: 'tags', model: Tag })
       .populate({ path: 'author', model: User })
       .sort({ createdAt: -1 })
+      .skip(pageSize * (page - 1))
+      .limit(pageSize)
 
-    return { questions: matchedQuestions, tag }
+    const questionsCount = await Question.find(queryQuestions).countDocuments()
+    const pageCount = Math.ceil(questionsCount / pageSize)
+
+    return { questions: matchedQuestions, tag, pageCount }
   } catch (error) {
     console.log(error)
     throw error

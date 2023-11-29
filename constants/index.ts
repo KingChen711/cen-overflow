@@ -55,12 +55,12 @@ export const BADGE_CRITERIA = {
     SILVER: 50,
     GOLD: 100
   },
-  QUESTION_UPVOTES: {
+  QUESTION_UP_VOTES: {
     BRONZE: 10,
     SILVER: 50,
     GOLD: 100
   },
-  ANSWER_UPVOTES: {
+  ANSWER_UP_VOTES: {
     BRONZE: 10,
     SILVER: 50,
     GOLD: 100

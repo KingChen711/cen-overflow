@@ -18,10 +18,10 @@ type Props = {
     picture: string
   }
   _id: string
-  upvotes: number
+  upVotes: number
 }
 
-function AnswerCard({ question, createdAt, author, upvotes, _id }: Props) {
+function AnswerCard({ question, createdAt, author, upVotes, _id }: Props) {
   const { userId: clerkId } = auth()
   const showActions = author.clerkId === clerkId
 
@@ -54,7 +54,7 @@ function AnswerCard({ question, createdAt, author, upvotes, _id }: Props) {
           <div className='flex-center flex-wrap gap-1'>
             <Image alt='like icon' width={16} height={16} className='object-contain ' src='/assets/icons/like.svg' />
             <p className='small-medium text-dark400_light800 flex items-center gap-1'>
-              {upvotes}
+              {upVotes}
               <span className='small-regular line-clamp-1 '> Votes</span>
             </p>
           </div>

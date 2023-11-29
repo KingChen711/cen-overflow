@@ -25,7 +25,7 @@ async function AnswersTab({ userId, searchParams }: Props) {
             author={answer.author}
             createdAt={answer.createdAt}
             question={answer.question}
-            upvotes={answer.upvotes.length}
+            upVotes={answer.upVotes.length}
           />
         )
       })}

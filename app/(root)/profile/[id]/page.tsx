@@ -23,7 +23,7 @@ type Props = {
 
 async function ProfilePage({ params, searchParams }: Props) {
   const { id: userId } = params
-  const { totalAnswers, totalQuestions, user } = await getUserInfo({ userId })
+  const { totalAnswers, totalQuestions, user, badgeCounts } = await getUserInfo({ userId })
   const { userId: clerkId } = auth()
 
   return (
@@ -57,7 +57,12 @@ async function ProfilePage({ params, searchParams }: Props) {
         </div>
       </div>
 
-      <Stats totalAnswers={totalAnswers} totalQuestions={totalQuestions} />
+      <Stats
+        reputation={user.reputation}
+        badgeCounts={badgeCounts}
+        totalAnswers={totalAnswers}
+        totalQuestions={totalQuestions}
+      />
 
       <div className='mt-10 flex gap-10'>
         <Tabs defaultValue='top-posts' className='flex-1'>

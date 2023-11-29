@@ -24,7 +24,7 @@ async function AllAnswers({ questionId, userId, page, filter }: Props) {
   })
 
   return (
-    <div className='mt-11'>
+    <div className='mb-6 mt-11'>
       <div className='flex items-center justify-between'>
         <h3 className='primary-text-gradient'>{answersCount} Answers</h3>
         <Filter filters={AnswerFilters} />
@@ -62,10 +62,10 @@ async function AllAnswers({ questionId, userId, page, filter }: Props) {
                       type='answer'
                       itemId={JSON.stringify(answer._id)}
                       userId={userId}
-                      upvotes={answer.upvotes.length}
-                      downvotes={answer.downvotes.length}
-                      hasUpvotes={userId && answer.upvotes.includes(JSON.parse(userId))}
-                      hasDownvotes={userId && answer.downvotes.includes(JSON.parse(userId))}
+                      upVotes={answer.upVotes.length}
+                      downVotes={answer.downVotes.length}
+                      hasUpVotes={userId && answer.upVotes.includes(JSON.parse(userId))}
+                      hasDownVotes={userId && answer.downVotes.includes(JSON.parse(userId))}
                     />
                   </div>
                 </div>
@@ -74,9 +74,8 @@ async function AllAnswers({ questionId, userId, page, filter }: Props) {
             </article>
           )
         })}
+        {answers.length > 0 && <Pagination pageNumber={page} totalPages={pageCount} className='mt-10' />}
       </div>
-
-      <Pagination pageNumber={page} totalPages={pageCount} className='mt-10' />
     </div>
   )
 }

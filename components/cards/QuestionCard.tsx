@@ -22,7 +22,7 @@ type Props = {
       clerkId: string
     }
     createdAt: Date
-    upvotes: Array<object>
+    upVotes: Array<object>
     answers: Array<object>
     views: number
     showCount?: boolean
@@ -69,7 +69,7 @@ function QuestionCard({ question }: Props) {
             alt='like count'
             imgUrl='/assets/icons/like.svg'
             title='Votes'
-            value={formatNumber(question.upvotes.length)}
+            value={formatNumber(question.upVotes.length)}
             textStyles='small-medium text-dark400_light800'
           />
           <Metric

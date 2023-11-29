@@ -15,6 +15,8 @@ import Question from '@/database/question.model'
 import Answer from '@/database/answer.model'
 import Tag from '@/database/tag.model'
 import { FilterQuery } from 'mongoose'
+import { BadgeCriteriaType } from '@/types'
+import { assignBadges } from '../utils'
 
 export async function getAllUsers(params: GetAllUsersParams) {
   try {
@@ -152,7 +154,63 @@ export async function getUserInfo(params: GetUserByIdParams) {
     const totalQuestions = await Question.countDocuments({ author: user._id })
     const totalAnswers = await Answer.countDocuments({ author: user._id })
 
-    return { totalQuestions, totalAnswers, user }
+    const [questionUpvotes] = await Question.aggregate([
+      { $match: { author: user._id } },
+      {
+        $project: {
+          _id: 0,
+          upVotes: { $size: '$upVotes' }
+        }
+      },
+      {
+        $group: { _id: null, totalUpvotes: { $sum: '$upVotes' } }
+      }
+    ])
+    const [answerUpvotes] = await Answer.aggregate([
+      { $match: { author: user._id } },
+      {
+        $project: {
+          _id: 0,
+          upVotes: { $size: '$upVotes' }
+        }
+      },
+      {
+        $group: { _id: null, totalUpvotes: { $sum: '$upVotes' } }
+      }
+    ])
+    const [questionViews] = await Question.aggregate([
+      { $match: { author: user._id } },
+      {
+        $group: { _id: null, totalViews: { $sum: '$views' } }
+      }
+    ])
+
+    const criteria = [
+      {
+        type: 'QUESTION_COUNT' as BadgeCriteriaType,
+        count: totalQuestions || 0
+      },
+      {
+        type: 'ANSWER_COUNT' as BadgeCriteriaType,
+        count: totalAnswers || 0
+      },
+      {
+        type: 'QUESTION_UP_VOTES' as BadgeCriteriaType,
+        count: questionUpvotes?.totalUpvotes || 0
+      },
+      {
+        type: 'ANSWER_UP_VOTES' as BadgeCriteriaType,
+        count: answerUpvotes?.totalUpvotes || 0
+      },
+      {
+        type: 'TOTAL_VIEWS' as BadgeCriteriaType,
+        count: questionViews?.totalViews || 0
+      }
+    ]
+
+    const badgeCounts = assignBadges({ criteria })
+
+    return { totalQuestions, totalAnswers, user, badgeCounts }
   } catch (error) {
     console.log(error)
     throw error
@@ -168,7 +226,7 @@ export async function getUserQuestions(params: GetUserStatsParams) {
     const questions = await Question.find({ author: userId })
       .populate({ path: 'tags', model: Tag })
       .populate({ path: 'author', model: User })
-      .sort({ views: -1, upvotes: -1 })
+      .sort({ createdAt: -1, views: -1, upVotes: -1 })
       .skip(pageSize * (page - 1))
       .limit(pageSize)
 
@@ -192,7 +250,7 @@ export async function getUserAnswers(params: GetUserStatsParams) {
     const answers = await Answer.find({ author: userId })
       .populate({ path: 'question', model: Question })
       .populate({ path: 'author', model: User })
-      .sort({ views: -1, upvotes: -1 })
+      .sort({ createdAt: -1, views: -1, upVotes: -1 })
       .skip(pageSize * (page - 1))
       .limit(pageSize)
 

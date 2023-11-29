@@ -1,12 +1,11 @@
 'use client'
 
-import { downvoteAnswer, upvoteAnswer } from '@/lib/actions/answer.action'
-import { viewQuestion } from '@/lib/actions/interactive.action'
-import { downvoteQuestion, toggleSaveQuestion, upvoteQuestion } from '@/lib/actions/question.action'
+import { downVoteAnswer, upVoteAnswer } from '@/lib/actions/answer.action'
+import { downVoteQuestion, toggleSaveQuestion, upVoteQuestion } from '@/lib/actions/question.action'
 import { formatNumber } from '@/lib/utils'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
-import React, { useEffect } from 'react'
+import React from 'react'
 
 type Props = (
   | {
@@ -19,40 +18,40 @@ type Props = (
 ) & {
   itemId: string
   userId?: string
-  upvotes: number
-  downvotes: number
-  hasUpvotes: boolean
-  hasDownvotes: boolean
+  upVotes: number
+  downVotes: number
+  hasUpVotes: boolean
+  hasDownVotes: boolean
 }
 
 function Votes(props: Props) {
   const router = useRouter()
   const pathName = usePathname()
-  const { type, downvotes, hasDownvotes, hasUpvotes, itemId, upvotes, userId } = props
+  const { type, downVotes, hasDownVotes, hasUpVotes, itemId, upVotes, userId } = props
   let hasSaved
   if (type === 'question') {
     hasSaved = props.hasSaved
   }
 
-  const handleVote = async (action: 'downvote' | 'upvote') => {
+  const handleVote = async (action: 'downVote' | 'upVote') => {
     if (!userId) {
       return router.push('/sign-in')
       // TODO: Toast about sign-in
     }
 
     if (type === 'question') {
-      if (action === 'upvote') {
-        await upvoteQuestion({
-          hasdownVoted: hasDownvotes,
-          hasupVoted: hasUpvotes,
+      if (action === 'upVote') {
+        await upVoteQuestion({
+          hasDownVoted: hasDownVotes,
+          hasUpVoted: hasUpVotes,
           questionId: JSON.parse(itemId),
           userId: JSON.parse(userId),
           path: pathName
         })
       } else {
-        await downvoteQuestion({
-          hasdownVoted: hasDownvotes,
-          hasupVoted: hasUpvotes,
+        await downVoteQuestion({
+          hasDownVoted: hasDownVotes,
+          hasUpVoted: hasUpVotes,
           questionId: JSON.parse(itemId),
           userId: JSON.parse(userId),
           path: pathName
@@ -61,18 +60,18 @@ function Votes(props: Props) {
     }
 
     if (type === 'answer') {
-      if (action === 'upvote') {
-        await upvoteAnswer({
-          hasdownVoted: hasDownvotes,
-          hasupVoted: hasUpvotes,
+      if (action === 'upVote') {
+        await upVoteAnswer({
+          hasDownVoted: hasDownVotes,
+          hasUpVoted: hasUpVotes,
           answerId: JSON.parse(itemId),
           userId: JSON.parse(userId),
           path: pathName
         })
       } else {
-        await downvoteAnswer({
-          hasdownVoted: hasDownvotes,
-          hasupVoted: hasUpvotes,
+        await downVoteAnswer({
+          hasDownVoted: hasDownVotes,
+          hasUpVoted: hasUpVotes,
           answerId: JSON.parse(itemId),
           userId: JSON.parse(userId),
           path: pathName
@@ -94,42 +93,33 @@ function Votes(props: Props) {
     })
   }
 
-  useEffect(() => {
-    if (type === 'question') {
-      viewQuestion({
-        questionId: JSON.parse(itemId),
-        userId: userId ? JSON.parse(userId) : undefined
-      })
-    }
-  }, [itemId, userId, type])
-
   return (
     <div className='flex gap-5'>
       <div className='flex-center gap-2.5'>
         <div className='flex-center gap-1.5'>
           <Image
-            alt='upvote'
+            alt='upVote'
             width={18}
             height={18}
             className='cursor-pointer'
-            src={hasUpvotes ? '/assets/icons/upvoted.svg' : '/assets/icons/upvote.svg'}
-            onClick={() => handleVote('upvote')}
+            src={hasUpVotes ? '/assets/icons/upVoted.svg' : '/assets/icons/upVote.svg'}
+            onClick={() => handleVote('upVote')}
           />
           <div className='flex-center background-light700_dark400 min-w-[18px] rounded-sm p-1'>
-            <p className='subtle-medium text-dark400_light900'>{formatNumber(upvotes)}</p>
+            <p className='subtle-medium text-dark400_light900'>{formatNumber(upVotes)}</p>
           </div>
         </div>
         <div className='flex-center gap-1.5'>
           <Image
-            alt='downvote'
+            alt='downVote'
             width={18}
             height={18}
             className='cursor-pointer'
-            src={hasDownvotes ? '/assets/icons/downvoted.svg' : '/assets/icons/downvote.svg'}
-            onClick={() => handleVote('downvote')}
+            src={hasDownVotes ? '/assets/icons/downVoted.svg' : '/assets/icons/downVote.svg'}
+            onClick={() => handleVote('downVote')}
           />
           <div className='flex-center background-light700_dark400 min-w-[18px] rounded-sm p-1'>
-            <p className='subtle-medium text-dark400_light900'>{formatNumber(downvotes)}</p>
+            <p className='subtle-medium text-dark400_light900'>{formatNumber(downVotes)}</p>
           </div>
         </div>
       </div>

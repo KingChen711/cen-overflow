@@ -4,6 +4,7 @@ import Metric from '@/components/shared/Metric'
 import ParseHTML from '@/components/shared/ParseHTML'
 import RenderTag from '@/components/shared/RenderTag'
 import Votes from '@/components/shared/Votes'
+import { viewQuestion } from '@/lib/actions/interactive.action'
 import { getQuestionById } from '@/lib/actions/question.action'
 import { getUserById } from '@/lib/actions/user.action'
 import { formatNumber, getTimestamp } from '@/lib/utils'
@@ -33,6 +34,11 @@ async function QuestionDetailPage({ params, searchParams }: Props) {
     mongoUser = await getUserById({ userId: clerkId })
   }
 
+  await viewQuestion({
+    questionId: result.question._id,
+    userId: mongoUser ? mongoUser._id : undefined
+  })
+
   return (
     <>
       <div className='flex-start w-full flex-col'>
@@ -46,10 +52,10 @@ async function QuestionDetailPage({ params, searchParams }: Props) {
               type='question'
               itemId={JSON.stringify(result.question._id)}
               userId={mongoUser ? JSON.stringify(mongoUser._id) : undefined}
-              upvotes={result.question.upvotes.length}
-              downvotes={result.question.downvotes.length}
-              hasUpvotes={mongoUser && result.question.upvotes.includes(mongoUser._id)}
-              hasDownvotes={mongoUser && result.question.downvotes.includes(mongoUser._id)}
+              upVotes={result.question.upVotes.length}
+              downVotes={result.question.downVotes.length}
+              hasUpVotes={mongoUser && result.question.upVotes.includes(mongoUser._id)}
+              hasDownVotes={mongoUser && result.question.downVotes.includes(mongoUser._id)}
               hasSaved={mongoUser && mongoUser.saved.includes(result.question._id)}
             />
           </div>
@@ -98,6 +104,7 @@ async function QuestionDetailPage({ params, searchParams }: Props) {
       />
 
       <Answer
+        question={result.question.content}
         questionId={JSON.stringify(result.question._id)}
         authorId={mongoUser ? JSON.stringify(mongoUser._id) : undefined}
       />

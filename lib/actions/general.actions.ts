@@ -69,3 +69,5 @@ export const globalSearch = async (params: SearchParams) => {
     throw error
   }
 }
+
+// TODO:Add toast,skeleton,metadata

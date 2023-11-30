@@ -14,6 +14,7 @@ import Image from 'next/image'
 import { createQuestion, editQuestion } from '@/lib/actions/question.action'
 import { usePathname, useRouter } from 'next/navigation'
 import { useTheme } from '@/contexts/ThemeProvider'
+import { Skeleton } from '../ui/skeleton'
 
 type Props = {
   mongoUserId: string
@@ -27,6 +28,7 @@ export default function Question({ mongoUserId, type = 'create', stringifyQuesti
   const editorRef = useRef(null)
   const { theme } = useTheme()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isLoadingEditor, setIsLoadingEditor] = useState(true)
   const parsedQuestion = stringifyQuestion ? JSON.parse(stringifyQuestion) : undefined
 
   const form = useForm<z.infer<typeof questionSchema>>({
@@ -137,44 +139,50 @@ export default function Question({ mongoUserId, type = 'create', stringifyQuesti
                 Detailed explanation of your problem?<span className='text-primary-500'>*</span>
               </FormLabel>
               <FormControl className='mt-3.5'>
-                <Editor
-                  apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
-                  onInit={(evt, editor) =>
-                    // @ts-ignore
-                    (editorRef.current = editor)
-                  }
-                  onBlur={field.onBlur}
-                  onEditorChange={(content) => field.onChange(content)}
-                  initialValue={form.getValues('explanation')}
-                  init={{
-                    height: 350,
-                    menubar: false,
-                    plugins: [
-                      'advlist',
-                      'autolink',
-                      'lists',
-                      'link',
-                      'image',
-                      'charmap',
-                      'preview',
-                      'anchor',
-                      'searchreplace',
-                      'visualblocks',
-                      'codesample',
-                      'fullscreen',
-                      'insertdatetime',
-                      'media',
-                      'table'
-                    ],
-                    toolbar:
-                      'undo redo | ' +
-                      'codesample | bold italic forecolor | alignleft aligncenter |' +
-                      'alignright alignjustify | bullist numlist',
-                    content_style: 'body { font-family:Inter; font-size:16px }',
-                    content_css: theme === 'dark' ? 'dark' : 'light',
-                    skin: theme === 'dark' ? 'oxide-dark' : 'oxide'
-                  }}
-                />
+                <>
+                  {isLoadingEditor && <Skeleton className='mt-3 h-[350px] w-full rounded-md' />}
+                  <Editor
+                    onLoadContent={() => {
+                      setIsLoadingEditor(false)
+                    }}
+                    apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
+                    onInit={(evt, editor) =>
+                      // @ts-ignore
+                      (editorRef.current = editor)
+                    }
+                    onBlur={field.onBlur}
+                    onEditorChange={(content) => field.onChange(content)}
+                    initialValue={form.getValues('explanation')}
+                    init={{
+                      height: 350,
+                      menubar: false,
+                      plugins: [
+                        'advlist',
+                        'autolink',
+                        'lists',
+                        'link',
+                        'image',
+                        'charmap',
+                        'preview',
+                        'anchor',
+                        'searchreplace',
+                        'visualblocks',
+                        'codesample',
+                        'fullscreen',
+                        'insertdatetime',
+                        'media',
+                        'table'
+                      ],
+                      toolbar:
+                        'undo redo | ' +
+                        'codesample | bold italic forecolor | alignleft aligncenter |' +
+                        'alignright alignjustify | bullist numlist',
+                      content_style: 'body { font-family:Inter; font-size:16px }',
+                      content_css: theme === 'dark' ? 'dark' : 'light',
+                      skin: theme === 'dark' ? 'oxide-dark' : 'oxide'
+                    }}
+                  />
+                </>
               </FormControl>
               <FormDescription className='body-regular mt-2.5 text-light-500'>
                 Introduce the problem and expand on what you put in the title. Minimum 20 characters.

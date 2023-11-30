@@ -6,6 +6,7 @@ import { formatNumber } from '@/lib/utils'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import React from 'react'
+import { toast } from '../ui/use-toast'
 
 type Props = (
   | {
@@ -28,15 +29,18 @@ function Votes(props: Props) {
   const router = useRouter()
   const pathName = usePathname()
   const { type, downVotes, hasDownVotes, hasUpVotes, itemId, upVotes, userId } = props
-  let hasSaved
+  let hasSaved = false
   if (type === 'question') {
     hasSaved = props.hasSaved
   }
 
   const handleVote = async (action: 'downVote' | 'upVote') => {
     if (!userId) {
+      toast({
+        title: 'Please log in',
+        description: 'You must be logged in to perform this action'
+      })
       return router.push('/sign-in')
-      // TODO: Toast about sign-in
     }
 
     if (type === 'question') {
@@ -48,6 +52,10 @@ function Votes(props: Props) {
           userId: JSON.parse(userId),
           path: pathName
         })
+        return toast({
+          title: `Up vote ${!hasUpVotes ? 'Successfully' : 'Removed'}`,
+          variant: !hasUpVotes ? 'default' : 'destructive'
+        })
       } else {
         await downVoteQuestion({
           hasDownVoted: hasDownVotes,
@@ -55,6 +63,10 @@ function Votes(props: Props) {
           questionId: JSON.parse(itemId),
           userId: JSON.parse(userId),
           path: pathName
+        })
+        return toast({
+          title: `Down vote ${!hasDownVotes ? 'Successfully' : 'Removed'}`,
+          variant: !hasDownVotes ? 'default' : 'destructive'
         })
       }
     }
@@ -68,6 +80,10 @@ function Votes(props: Props) {
           userId: JSON.parse(userId),
           path: pathName
         })
+        return toast({
+          title: `Up vote ${!hasUpVotes ? 'Successfully' : 'Removed'}`,
+          variant: !hasUpVotes ? 'default' : 'destructive'
+        })
       } else {
         await downVoteAnswer({
           hasDownVoted: hasDownVotes,
@@ -76,20 +92,31 @@ function Votes(props: Props) {
           userId: JSON.parse(userId),
           path: pathName
         })
+        return toast({
+          title: `Down vote ${!hasDownVotes ? 'Successfully' : 'Removed'}`,
+          variant: !hasDownVotes ? 'default' : 'destructive'
+        })
       }
     }
   }
 
   const handleSave = async () => {
     if (!userId) {
+      toast({
+        title: 'Please log in',
+        description: 'You must be logged in to perform this action'
+      })
       return router.push('/sign-in')
-      // TODO: Toast about sign-in
     }
 
     await toggleSaveQuestion({
       path: pathName,
       questionId: JSON.parse(itemId),
       userId: JSON.parse(userId)
+    })
+    return toast({
+      title: `Question ${!hasSaved ? 'saved in' : 'removed from'} your collection`,
+      variant: !hasSaved ? 'default' : 'destructive'
     })
   }
 

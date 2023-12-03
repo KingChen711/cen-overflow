@@ -129,7 +129,7 @@ function Votes(props: Props) {
             width={18}
             height={18}
             className='cursor-pointer'
-            src={hasUpVotes ? '/assets/icons/upVoted.svg' : '/assets/icons/upVote.svg'}
+            src={hasUpVotes ? '/assets/icons/up-voted.svg' : '/assets/icons/up-vote.svg'}
             onClick={() => handleVote('upVote')}
           />
           <div className='flex-center background-light700_dark400 min-w-[18px] rounded-sm p-1'>
@@ -142,7 +142,7 @@ function Votes(props: Props) {
             width={18}
             height={18}
             className='cursor-pointer'
-            src={hasDownVotes ? '/assets/icons/downVoted.svg' : '/assets/icons/downVote.svg'}
+            src={hasDownVotes ? '/assets/icons/down-voted.svg' : '/assets/icons/down-vote.svg'}
             onClick={() => handleVote('downVote')}
           />
           <div className='flex-center background-light700_dark400 min-w-[18px] rounded-sm p-1'>

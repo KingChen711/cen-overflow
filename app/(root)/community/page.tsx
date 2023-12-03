@@ -53,7 +53,9 @@ async function CommunityPage({ searchParams }: Props) {
         )}
       </section>
 
-      <Pagination pageNumber={searchParams.page ? +searchParams.page : 1} totalPages={pageCount} className='mt-10' />
+      {users.length > 0 && (
+        <Pagination pageNumber={searchParams.page ? +searchParams.page : 1} totalPages={pageCount} className='mt-10' />
+      )}
     </>
   )
 }

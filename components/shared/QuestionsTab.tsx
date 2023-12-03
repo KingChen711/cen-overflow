@@ -21,7 +21,9 @@ async function QuestionsTab({ userId, searchParams }: Props) {
         return <QuestionCard key={question._id} question={question as any} />
       })}
 
-      <Pagination pageNumber={searchParams.page ? +searchParams.page : 1} totalPages={pageCount} className='mt-10' />
+      {questions.length > 0 && (
+        <Pagination pageNumber={searchParams.page ? +searchParams.page : 1} totalPages={pageCount} className='mt-10' />
+      )}
     </>
   )
 }

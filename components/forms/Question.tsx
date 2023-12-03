@@ -46,7 +46,7 @@ export default function Question({ mongoUserId, type = 'create', stringifyQuesti
       // make am async call to API -> create a question
       // contains all form data
       if (type === 'create') {
-        await createQuestion({
+        const question = await createQuestion({
           title: values.title,
           content: values.explanation,
           tags: values.tags,
@@ -54,7 +54,7 @@ export default function Question({ mongoUserId, type = 'create', stringifyQuesti
           path: pathName
         })
 
-        router.push('/')
+        router.push(`/question/${question._id}`)
       }
 
       if (type === 'edit') {

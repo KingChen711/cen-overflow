@@ -53,7 +53,9 @@ async function TagsPage({ searchParams }: Props) {
         )}
       </section>
 
-      <Pagination pageNumber={searchParams.page ? +searchParams.page : 1} totalPages={pageCount} className='mt-10' />
+      {tags.length > 0 && (
+        <Pagination pageNumber={searchParams.page ? +searchParams.page : 1} totalPages={pageCount} className='mt-10' />
+      )}
     </>
   )
 }

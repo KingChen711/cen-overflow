@@ -11,6 +11,7 @@ import ProfileLink from '@/components/shared/ProfileLink'
 import Stats from '@/components/shared/Stats'
 import QuestionsTab from '@/components/shared/QuestionsTab'
 import AnswersTab from '@/components/shared/AnswersTab'
+import { getTopInteractedTags } from '@/lib/actions/tag.actions'
 
 type Props = {
   params: {
@@ -25,6 +26,7 @@ async function ProfilePage({ params, searchParams }: Props) {
   const { id: userId } = params
   const { totalAnswers, totalQuestions, user, badgeCounts } = await getUserInfo({ userId })
   const { userId: clerkId } = auth()
+  const { tags } = await getTopInteractedTags({ userId: user._id, limit: 10 })
 
   return (
     <>
@@ -82,10 +84,14 @@ async function ProfilePage({ params, searchParams }: Props) {
           </TabsContent>
         </Tabs>
         <div className='flex min-w-[278px] flex-col max-lg:hidden'>
-          <h3 className='h3-bold text-dark200_light900'>Top Tags</h3>
+          <div className='flex items-center justify-between'>
+            <h3 className='h3-bold text-dark200_light900'>Top Tags</h3>
+            <div className='text-dark200_light900 font-medium'>Interactions</div>
+          </div>
           <div className='mt-7 flex flex-col gap-4'>
-            <RenderTag tag={{ _id: '1', name: 'nextjs', totalQuestions: 5 }} showCount />
-            <RenderTag tag={{ _id: '3', name: 'java', totalQuestions: 7 }} showCount />
+            {tags.map((tag) => (
+              <RenderTag key={tag._id} tag={tag} showInteraction />
+            ))}
           </div>
         </div>
       </div>

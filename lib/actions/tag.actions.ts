@@ -6,6 +6,7 @@ import { GetAllTagsParams, GetQuestionsByTagIdParams, GetTopInteractedTagsParams
 import Tag from '@/database/tag.model'
 import Question from '@/database/question.model'
 import { FilterQuery } from 'mongoose'
+import Interaction from '@/database/interaction.model'
 
 export async function getAllTags(params: GetAllTagsParams) {
   try {
@@ -57,20 +58,45 @@ export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
   try {
     await connectToDatabase()
 
-    const { userId } = params
+    const { userId, limit } = params
 
     const user = await User.findById(userId)
 
     if (!user) throw new Error('User not found')
 
-    // Find interactions for the user and group by tags
-    // Interaction...
+    const interactions = await Interaction.find({
+      $match: {
+        user: userId,
+        $expr: { $gt: [{ $size: '$tags' }, 0] }
+      }
+    })
 
-    return [
-      { _id: '1', name: 'tag1' },
-      { _id: '2', name: 'tag2' },
-      { _id: '3', name: 'tag3' }
-    ]
+    const tags: string[] = []
+    for (const interaction of interactions) {
+      tags.push(...interaction.tags.map((tag: any) => tag.toString()))
+    }
+
+    const amountEachTag: { [key: string]: number } = {}
+    for (const tag of tags) {
+      amountEachTag[tag] = amountEachTag[tag] ? amountEachTag[tag] + 1 : 1
+    }
+
+    const topTagIds = Object.keys(amountEachTag)
+
+    const topTags = (await Tag.find({ _id: { $in: topTagIds } }))
+      .map((tag) => {
+        tag.amountInteraction = amountEachTag[tag._id.toString()]
+        return tag
+      })
+      .toSorted((a, b) => {
+        return b.amountInteraction - a.amountInteraction
+      })
+
+    if (limit && topTags.length > limit) {
+      return { tags: topTags.slice(0, limit) }
+    }
+
+    return { tags: topTags }
   } catch (error) {
     console.log(error)
     throw error

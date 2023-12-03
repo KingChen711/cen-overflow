@@ -69,7 +69,9 @@ async function Home({ searchParams }: Props) {
         )}
       </div>
 
-      <Pagination pageNumber={searchParams.page ? +searchParams.page : 1} totalPages={pageCount} className='mt-10' />
+      {questions.length > 0 && (
+        <Pagination pageNumber={searchParams.page ? +searchParams.page : 1} totalPages={pageCount} className='mt-10' />
+      )}
     </>
   )
 }

@@ -11,7 +11,7 @@ export async function viewQuestion(params: ViewQuestionParams) {
 
     const { questionId, userId } = params
 
-    await Question.findByIdAndUpdate(questionId, { $inc: { views: 1 } })
+    const question = await Question.findByIdAndUpdate(questionId, { $inc: { views: 1 } })
 
     if (userId) {
       const existingInteraction = await Interaction.findOne({ user: userId, action: 'view', question: questionId })
@@ -21,7 +21,8 @@ export async function viewQuestion(params: ViewQuestionParams) {
       await Interaction.create({
         user: userId,
         action: 'view',
-        question: questionId
+        question: questionId,
+        tags: question.tags
       })
     }
   } catch (error) {

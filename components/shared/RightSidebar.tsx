@@ -33,7 +33,10 @@ async function RightSidebar() {
         })}
       </div>
 
-      <h3 className='h3-bold text-dark200_light900 mb-7'>Popular Tags</h3>
+      <div className='mb-7 flex items-center justify-between'>
+        <h3 className='h3-bold text-dark200_light900'>Popular Tags</h3>
+        <div className='text-dark200_light900'>Questions</div>
+      </div>
 
       <div className='flex flex-col gap-4'>
         {popularTags.map((tag) => (

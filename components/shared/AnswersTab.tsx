@@ -30,7 +30,9 @@ async function AnswersTab({ userId, searchParams }: Props) {
         )
       })}
 
-      <Pagination pageNumber={searchParams.page ? +searchParams.page : 1} totalPages={pageCount} className='mt-10' />
+      {answers.length > 0 && (
+        <Pagination pageNumber={searchParams.page ? +searchParams.page : 1} totalPages={pageCount} className='mt-10' />
+      )}
     </>
   )
 }

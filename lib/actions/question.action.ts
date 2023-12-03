@@ -59,6 +59,8 @@ export async function createQuestion(params: CreateQuestionParams) {
     await User.findByIdAndUpdate(author, { $inc: { reputation: 5 } })
 
     revalidatePath(path)
+
+    return question
   } catch (error) {
     console.log(error)
     throw error

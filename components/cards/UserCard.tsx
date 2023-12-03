@@ -16,7 +16,7 @@ type Props = {
 }
 
 async function UserCard({ user: { _id, name, picture, username, clerkId } }: Props) {
-  const interactedTags = await getTopInteractedTags({ userId: _id })
+  const { tags } = await getTopInteractedTags({ userId: _id, limit: 3 })
 
   return (
     <Link href={`/profile/${clerkId}`} className='shadow-light100_darknone w-full max-xs:min-w-full xs:w-[260px]'>
@@ -30,8 +30,8 @@ async function UserCard({ user: { _id, name, picture, username, clerkId } }: Pro
 
         <div className='mt-5'>
           <div className='flex items-center gap-2'>
-            {interactedTags.length > 0 ? (
-              interactedTags.map((tag) => {
+            {tags.length > 0 ? (
+              tags.map((tag) => {
                 return <RenderTag key={tag._id} tag={tag} />
               })
             ) : (

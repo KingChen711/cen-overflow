@@ -123,7 +123,7 @@ export async function deleteUser(params: DeleteUserParams) {
       throw new Error('User not found')
     }
 
-    // delete everything invole with user in the database
+    // delete everything involve with user in the database
     // const userQuestionIds = await Question.find({ author: user._id }).distinct('_id')
 
     await Question.deleteMany({ author: user._id })

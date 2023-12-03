@@ -32,10 +32,12 @@ async function QuestionDetailPage({ params, searchParams }: Props) {
     mongoUser = await getUserById({ userId: clerkId })
   }
 
-  await viewQuestion({
-    questionId: result.question._id,
-    userId: mongoUser ? mongoUser._id : undefined
-  })
+  if (result.question) {
+    await viewQuestion({
+      questionId: result.question._id,
+      userId: mongoUser ? mongoUser._id : undefined
+    })
+  }
 
   return (
     <>

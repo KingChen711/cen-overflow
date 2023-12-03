@@ -13,6 +13,7 @@ import Image from 'next/image'
 import { createAnswer } from '@/lib/actions/answer.action'
 import { usePathname, useRouter } from 'next/navigation'
 import { ReloadIcon } from '@radix-ui/react-icons'
+import { toast } from '../ui/use-toast'
 
 type Props = {
   questionId: string
@@ -38,8 +39,13 @@ function Answer({ questionId, authorId, question }: Props) {
   async function onSubmit(values: z.infer<typeof answerSchema>) {
     setIsSubmitting(true)
     try {
-      // TODO: add toast about need to sign in
-      if (!authorId) return router.push('/sign-in')
+      if (!authorId) {
+        toast({
+          title: 'Please log in',
+          description: 'You must be logged in to perform this action'
+        })
+        return router.push('/sign-in')
+      }
 
       console.log({
         author: JSON.parse(authorId),
@@ -67,8 +73,13 @@ function Answer({ questionId, authorId, question }: Props) {
   }
 
   const generateAIAnswer = async () => {
-    // TODO: add toast about need to sign in
-    if (!authorId) return router.push('/sign-in')
+    if (!authorId) {
+      toast({
+        title: 'Please log in',
+        description: 'You must be logged in to perform this action'
+      })
+      return router.push('/sign-in')
+    }
     setIsSubmittingAI(true)
 
     try {

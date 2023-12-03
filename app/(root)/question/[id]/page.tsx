@@ -13,8 +13,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 
-// TODO: fix width of code
-
 type Props = {
   params: {
     id: string

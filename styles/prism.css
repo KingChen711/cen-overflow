@@ -1,14 +1,14 @@
-/**
+/*
  * MIT License
  * Copyright (c) 2021 Ayush Saini
- * Holi Theme for prism.js
+ * One Dark Pro Theme for prism.js
  * @author Ayush Saini <@AyushCodes on Twitter>
  */
 
 code[class*='language-'],
 pre[class*='language-'] {
-  color: #d6e7ff;
-  background: #030314;
+  color: #abb2bf;
+  background: #282c34;
   text-shadow: none;
   font-family: 'Fira Code', 'Fira Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
   font-size: 1em;
@@ -39,12 +39,12 @@ pre[class*='language-'] ::selection,
 code[class*='language-']::selection,
 code[class*='language-'] ::selection {
   color: inherit;
-  background: #1d3b54;
+  background: #61afef;
   text-shadow: none;
 }
 
 pre[class*='language-'] {
-  border: 1px solid #2a4555;
+  border: 1px solid #4b5263;
   border-radius: 5px;
   padding: 1.5em 1em;
   margin: 1em 0;
@@ -52,8 +52,8 @@ pre[class*='language-'] {
 }
 
 :not(pre) > code[class*='language-'] {
-  color: #f0f6f6;
-  background: #2a4555;
+  color: #abb2bf;
+  background: #333842;
   padding: 0.2em 0.3em;
   border-radius: 0.2em;
   box-decoration-break: clone;
@@ -63,11 +63,11 @@ pre[class*='language-'] {
 .token.prolog,
 .token.doctype,
 .token.cdata {
-  color: #446e69;
+  color: #5c6370;
 }
 
 .token.punctuation {
-  color: #d6b007;
+  color: #abb2bf;
 }
 
 .token.property,
@@ -77,19 +77,19 @@ pre[class*='language-'] {
 .token.constant,
 .token.symbol,
 .token.deleted {
-  color: #d6e7ff;
+  color: #e06c75;
 }
 
 .token.selector,
 .token.attr-name,
 .token.builtin,
 .token.inserted {
-  color: #e60067;
+  color: #98c379;
 }
 
 .token.string,
 .token.char {
-  color: #49c6ec;
+  color: #56b6c2;
 }
 
 .token.operator,
@@ -97,23 +97,23 @@ pre[class*='language-'] {
 .token.url,
 .language-css .token.string,
 .style .token.string {
-  color: #ec8e01;
+  color: #c678dd;
   background: transparent;
 }
 
 .token.atrule,
 .token.attr-value,
 .token.keyword {
-  color: #0fe468;
+  color: #c678dd;
 }
 
 .token.function,
 .token.class-name {
-  color: #78f3e9;
+  color: #61afef;
 }
 
 .token.regex,
 .token.important,
 .token.variable {
-  color: #d6e7ff;
+  color: #c678dd;
 }

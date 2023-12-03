@@ -21,11 +21,6 @@ function GlobalSearchResult() {
     const fetchData = async () => {
       setIsLoading(true)
 
-      console.log({
-        query: global,
-        type
-      })
-
       const res = await globalSearch({
         query: global,
         type

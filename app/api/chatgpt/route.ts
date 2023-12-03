@@ -35,8 +35,6 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ reply: 'This is the answer' })
   } catch (error: any) {
-    console.log('hêlo')
-
     return NextResponse.json({ error: error.message })
   }
 }

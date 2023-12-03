@@ -70,4 +70,4 @@ export const globalSearch = async (params: SearchParams) => {
   }
 }
 
-// TODO:Add toast,skeleton,metadata
+// metadata

@@ -62,7 +62,7 @@ function LocalSearchBar({ route, iconPosition, imgSrc, placeholder, className }:
           setSearchQuery(e.target.value)
         }}
         placeholder={placeholder}
-        className='paragraph-regular no-focus placeholder text-dark400_light700 background-light800_darkgradient border-none shadow-none outline-none'
+        className='paragraph-regular no-focus placeholder text-dark400_light700 border-none  bg-transparent shadow-none outline-none'
       />
 
       {iconPosition === 'right' && (

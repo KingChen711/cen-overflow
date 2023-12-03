@@ -41,6 +41,13 @@ function Answer({ questionId, authorId, question }: Props) {
       // TODO: add toast about need to sign in
       if (!authorId) return router.push('/sign-in')
 
+      console.log({
+        author: JSON.parse(authorId),
+        content: values.answer,
+        question: JSON.parse(questionId),
+        path: pathName
+      })
+
       await createAnswer({
         author: JSON.parse(authorId),
         content: values.answer,

@@ -16,7 +16,7 @@ export async function createAnswer(params: CreateAnswerParams) {
     const newAnswer = await Answer.create({
       author,
       content,
-      questionId
+      question: questionId
     })
 
     const question = await Question.findByIdAndUpdate(questionId, { $push: { answers: newAnswer._id } }, { new: true })

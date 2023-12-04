@@ -86,7 +86,7 @@ export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
         tag.amountInteraction = amountEachTag[tag._id.toString()]
         return tag
       })
-      .toSorted((a, b) => {
+      .sort((a, b) => {
         return b.amountInteraction - a.amountInteraction
       })
 

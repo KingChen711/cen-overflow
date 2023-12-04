@@ -35,7 +35,7 @@ export interface SearchParams {
 }
 
 export interface RecommendedParams {
-  userId: string
+  clerkId: string | null
   page?: number
   pageSize?: number
   searchQuery?: string

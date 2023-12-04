@@ -65,10 +65,8 @@ export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
     if (!user) throw new Error('User not found')
 
     const interactions = await Interaction.find({
-      $match: {
-        user: userId,
-        $expr: { $gt: [{ $size: '$tags' }, 0] }
-      }
+      user: userId,
+      $expr: { $gt: [{ $size: '$tags' }, 0] }
     })
 
     const tags: string[] = []

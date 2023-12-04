@@ -11,6 +11,7 @@ import {
   GetQuestionsParams,
   GetSavedQuestionsParams,
   QuestionVoteParams,
+  RecommendedParams,
   ToggleSaveQuestionParams
 } from './shared.types'
 import User from '@/database/user.model'
@@ -351,5 +352,58 @@ export async function editQuestion(params: EditQuestionParams) {
   }
 }
 
-// TODO:recommend question
+export async function getRecommendedQuestions(params: RecommendedParams) {
+  try {
+    await connectToDatabase()
+
+    const { clerkId, page = 1, pageSize = 10, searchQuery } = params
+
+    if (!clerkId) {
+      return { questions: [], pageCount: 0 }
+    }
+
+    const user = await User.findOne({ clerkId })
+
+    const interactions = await Interaction.find({
+      user: user._id,
+      $expr: { $gt: [{ $size: '$tags' }, 0] }
+    })
+
+    const tagIds: string[] = []
+    for (const interaction of interactions) {
+      tagIds.push(...interaction.tags.map((tag: any) => tag.toString()))
+    }
+    // @ts-ignore
+    const uniqueTagIds = [...new Set(tagIds)]
+
+    const query: FilterQuery<typeof Question> = { tags: { $in: uniqueTagIds } }
+
+    if (searchQuery) {
+      query.$or = [
+        {
+          title: { $regex: new RegExp(searchQuery, 'i') }
+        },
+        {
+          content: { $regex: new RegExp(searchQuery, 'i') }
+        }
+      ]
+    }
+
+    const questions = await Question.find(query)
+      .populate({ path: 'tags', model: Tag })
+      .populate({ path: 'author', model: User })
+      .sort({ createdAt: -1 })
+      .skip(pageSize * (page - 1))
+      .limit(pageSize)
+
+    const questionsCount = await Question.find(query).countDocuments()
+    const pageCount = Math.ceil(questionsCount / pageSize)
+
+    return { questions, pageCount }
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
 //  TODO:add metadata

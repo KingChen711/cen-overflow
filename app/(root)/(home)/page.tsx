@@ -7,8 +7,9 @@ import { HomePageFilters } from '@/constants/filters'
 import HomeFilters from '@/components/home/HomeFilters'
 import QuestionCard from '@/components/cards/QuestionCard'
 import NoResult from '@/components/shared/NoResult'
-import { getQuestions } from '@/lib/actions/question.action'
+import { getQuestions, getRecommendedQuestions } from '@/lib/actions/question.action'
 import Pagination from '@/components/shared/Pagination'
+import { auth } from '@clerk/nextjs'
 
 type Props = {
   searchParams: {
@@ -19,11 +20,19 @@ type Props = {
 }
 
 async function Home({ searchParams }: Props) {
-  const { pageCount, questions } = await getQuestions({
-    searchQuery: searchParams.q,
-    filter: searchParams.filter,
-    page: searchParams.page ? +searchParams.page : 1
-  })
+  const { userId: clerkId } = auth()
+  const { pageCount, questions } =
+    searchParams.filter === 'recommended'
+      ? await getRecommendedQuestions({
+          clerkId,
+          page: searchParams.page ? +searchParams.page : 1,
+          searchQuery: searchParams.q
+        })
+      : await getQuestions({
+          searchQuery: searchParams.q,
+          filter: searchParams.filter,
+          page: searchParams.page ? +searchParams.page : 1
+        })
 
   return (
     <>

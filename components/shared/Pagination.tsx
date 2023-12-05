@@ -35,8 +35,8 @@ const Pagination = ({ totalPages, className, pageNumber }: PaginateProps) => {
       nextLabel={'Next'}
       containerClassName={cn('flex justify-center gap-2 join', className)}
       pageLinkClassName={buttonVariants({ variant: 'outline' })}
-      previousLinkClassName={buttonVariants({ variant: 'link' })}
-      nextLinkClassName={buttonVariants({ variant: 'link' })}
+      previousLinkClassName={cn(buttonVariants({ variant: 'link' }), 'dark:text-white')}
+      nextLinkClassName={cn(buttonVariants({ variant: 'link' }), 'dark:text-white')}
       activeLinkClassName={cn(buttonVariants(), 'primary-gradient min-h-[46px] px-4 py-3 !text-light-900')}
     />
   )

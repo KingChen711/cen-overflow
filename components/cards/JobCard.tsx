@@ -33,7 +33,7 @@ function JobCard({ job }: Props) {
             width={16}
             height={16}
             className='rounded-full'
-            src='/_next/image?url=https%3A%2F%2Fflagsapi.com%2FVN%2Fflat%2F64.png&amp;w=32&amp;q=75'
+            src={`https://flagsapi.com/${job.job_country}/flat/64.png`}
           />
           <p className='body-medium text-dark400_light700'>{jobLocation}</p>
         </div>
@@ -72,7 +72,7 @@ function JobCard({ job }: Props) {
                 width={16}
                 height={16}
                 className='rounded-full'
-                src='/_next/image?url=https%3A%2F%2Fflagsapi.com%2FVN%2Fflat%2F64.png&amp;w=32&amp;q=75'
+                src={`https://flagsapi.com/${job.job_country}/flat/64.png`}
               />
               <p className='body-medium text-dark400_light700'>{jobLocation}</p>
             </div>

@@ -26,14 +26,12 @@ export async function getAllJobs(params: GetAllJobsParams) {
     num_pages: '1'
   })
 
-  console.log({ q: `${searchQuery + ' Software'}${filter ? ' in ' + filter : ''}` })
-
   const url = `https://jsearch.p.rapidapi.com/search?${query}`
 
   const jobs = await fetch(url, {
     method: 'GET',
     headers: {
-      'X-RapidAPI-Key': '88738c8398msh53c868ef94b6e17p1a9fe2jsn22543a9d5b32',
+      'X-RapidAPI-Key': process.env.NEXT_PUBLIC_JOB_APP_KEY!,
       'X-RapidAPI-Host': 'jsearch.p.rapidapi.com'
     }
   })

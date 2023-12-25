@@ -48,7 +48,7 @@ async function TagsPage({ searchParams }: Props) {
             linkTitle='Ask a Question'
             title='No Tags Found'
             link='/ask-question'
-            description='t looks like there are no tags available at the moment. 😕 Be a trendsetter by asking a question and creating a tag that best represents your topic of interest. 🚀'
+            description='It looks like there are no tags available at the moment. 😕 Be a trendsetter by asking a question and creating a tag that best represents your topic of interest. 🚀'
           />
         )}
       </section>

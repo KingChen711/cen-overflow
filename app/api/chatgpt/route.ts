@@ -33,7 +33,7 @@ export async function POST(req: Request) {
       }, 2000)
     })
 
-    return NextResponse.json({ reply: 'This is the answer' })
+    return NextResponse.json({ reply: "This feature's not work, OpenAI_API is not free now!" })
   } catch (error: any) {
     return NextResponse.json({ error: error.message })
   }
